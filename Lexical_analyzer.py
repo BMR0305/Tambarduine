@@ -28,12 +28,16 @@ t_GT = r'>'
 t_GTE = r'>='
 t_LPARENT = r'\('
 t_RPARENT = r'\)'
+t_LBRACKET = r'{'
+t_RBRACKET = r'}'
 t_COMMA = r','
 t_SEMICOLOM= r';'
 t_DOT = r'\.'
 t_SET = r'SET'
 t_TRUE = r'True'
 t_FALSE = r'False'
+t_T = r'T'
+t_F = r'F'
 t_TYPE = r'type'
 t_ABANICO = r'Abanico'
 t_VERTICAL = r'Vertical'
@@ -41,6 +45,10 @@ t_PERCUTOR = r'Percutor'
 t_GOLPE = r'Golpe'
 t_VIBRATO = r'Vibrato'
 t_METRONOMO = r'Metronomo'
+t_A = r'A'
+t_B = r'B'
+t_D = r'D'
+t_I = r'I'
 t_PRINT = r'println!'
 t_FOR = r'for'
 t_TO = r'to'
@@ -53,7 +61,11 @@ t_ET = r'EnTos'
 t_SN = r'SiNo'
 t_FEC = r'Fin-EnCaso'
 t_DEF = r'Def'
+t_PRIN = r'Principal'
 t_EXEC = r'Exec'
+t_NEG = r'Neg'
+
+
 
 def t_ID(t):
     r'[@][a-zA-Z0-9_?][a-zA-Z0-9_?][a-zA-Z0-9_?]*'
@@ -79,6 +91,8 @@ def t_NUMBER_F (t):
     r'\d+\.\d+'
     t.value = float(t.value)
     return t
+def t_STRING (t):
+    r'".*"'
 
 def t_error (t):
     print ("Illegal character '%s'" % t.value[0])
@@ -108,7 +122,7 @@ def search_files(myfile):
     return files [int(num_archive)-1]
 
 
-directory = '/Users/Lenovo/Documents/GitHub/Tambarduine/Tests/'
+directory = '/Users/Lenovo/Documents/GitHub/Tambarduine/Tests/Test_arduino/'
 archive = search_files(directory)
 test = directory+archive
 fp = codecs.open(test, "r", "utf-8")

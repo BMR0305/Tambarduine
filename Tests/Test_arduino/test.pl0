@@ -1,0 +1,7 @@
+Def @1112b (){
+    SET @MjE, 1;
+}
+
+Def Principal (){
+    SET @MFE, 1;
+}
