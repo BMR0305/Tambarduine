@@ -5,23 +5,108 @@ import re
 from Lexical_analyzer import tokens
 from sys import stdin
 
+
 precedence = (
-    ('right', 'ASSING'),
+    ('right', 'ASSING', 'COMPARE'),
     ('left','NE'),
     ('left','LT', 'LTE', 'GT', 'GTE'),
     ('left','PLUS', 'MINUS'),
-    ('left','TIMES', 'DIVIDE'),
+    ('left','TIMES', 'DIVIDE', 'DIVIDE_E'),
+	('left','MODULE'),
+	('left', 'EXPONENT'),
     ('left','LPARENT', 'RPARENT'),
 )
 
-def p_program(p):
-    '''program = block '''
-    #p[0] = program(p[1], "program")
+#intento de hacer la sintaxis
+
+def consult_type(p):
+	'''type LPARENT CONST RPARENT'''
+	print('Imprimir tipo de la variable')
+
+def bool_negation(p):
+	'''SET const.NE'''
+	print('cambiar valor de la variable')
+
+def bool_true(p):
+	'''SET const.T'''
+	print('cambiar valor de la variable a true')
+
+def bool_false(p):
+	'''SET const.F'''
+	print('cambiar valor de la variable a false')
+
+def abanico_up(p):
+	'''ABANICO(A)'''
+	print("mover abanico desde arriba hacia abajo")
+
+def abanico_down(p):
+	'''ABANICO(B)'''
+	print("mover abanico desde abajo hacia arriba")
+
+def vertical_right(p):
+	'''VERTICAL(D)'''
+	print("Mover verticalmente hacia la derecha")
+
+def vertical_left(p):
+	'''VERTICAL(I)'''
+	print("Mover verticalmente hacia la izquierda")
+
+def percutor_D(p):
+	'''PERCUTOR(D)'''
+	print("Golpear pandereta por la derecha")
+
+def percutor_I(p):
+	'''PERCUTOR(I)'''
+	print("Golpear pandereta por la izquierda")
+
+def percutor_DI(DI):
+	'''PERCUTOR(DI)'''
+	print("Golpear pandereta por la derecha y la izquierda")
+
+def percutor_A(p):
+	'''PERCUTOR(A)'''
+	print("Golpear pandereta por arriba")
+
+def percutor_B(p):
+	'''PERCUTOR(B)'''
+	print("Golpear pandereta por abajo")
+
+def percutor_AB(p):
+	'''PERCUTOR(AB)'''
+	print("Golpear pandereta por arriba y abajo")
+
+def golpe(p):
+	'''GOLPE()'''
+	print("Golpear pandereta en el centro")
+
+def vibrato(p):
+	'''VIBRATO(number)'''
+	print("Cantidad n de movimeintos verticales, n derecha y n izq")
+
+def metronomo_A(p):
+	'''METRONOMO(A, number)'''
+	print("activa el metronomo con n pulsos por segundo")
+
+def metronomo_D(p):
+	'''METRONOMO(D, number)'''
+	print("Desactiva el metronomo")
+
+def println(p):
+	'''println! (text);'''
+	print('text') #ESTE PUNTO ES SUMAMENTE IMPORTANTE (debe concatenar)
+
+
+
+
+
+
+
+def p_pgrogram(p):
+    '''proram = block '''
     print("program")
 
 def p_constDecl(p):
-    '''constDecl = const constAssigmentList;'''
-    #p[0] =
+    '''SET constDecl, const constAssigmentList SEMMICOLOM''' #modificado
 
 def p_constDeclEmpty(p):
     '''constDecl = empty'''
@@ -178,4 +263,38 @@ def p_error(p):
 	print ("Error de sintaxis ", p)
 	#print "Error en la linea "+str(p.lineno)
 
+def buscarFicheros(directorio):
+	ficheros = []
+	numArchivo = ''
+	respuesta = False
+	cont = 1
 
+	for base, dirs, files in os.walk(directorio):
+		ficheros.append(files)
+
+	for file in files:
+		print (str(cont)+". "+file)
+		cont = cont+1
+
+	while respuesta == False:
+		numArchivo = input('\nNumero del test: ')
+		for file in files:
+			if file == files[int(numArchivo)-1]:
+				respuesta = True
+				break
+
+	print ("Has escogido \"%s\" \n" %files[int(numArchivo)-1])
+
+	return files[int(numArchivo)-1]
+
+directorio = '/Users/Usuario/Documents/GitHub/Tambarduine/Tests/'
+archivo = buscarFicheros(directorio)
+test = directorio+archivo
+fp = codecs.open(test,"r","utf-8")
+cadena = fp.read()
+fp.close()
+
+parser = yacc.yacc()
+result = parser.parse(cadena)
+
+print (result)
