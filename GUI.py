@@ -14,16 +14,50 @@ class GUI:
 
         self.myFrame.config(menu=self.menu_bar)
 
-        self.editor = Text()
-        self.editor.pack()
+        self.textScrollbar = Scrollbar(self.myFrame)
+        self.textScrollbar.pack(side=RIGHT,fill=Y)
 
-        self.code_output = Text(height=10)
+        self.linenumber = Text(frame,height=25,width=4,padx=0,state="disabled",takefocus=0, background="grey", wrap="none", yscrollcommand=self.textScrollbar.set)
+        self.linenumber.place(x=10,y=10)
+        self.editor = Text(frame,wrap="word", undo=True,height=25,width=90,yscrollcommand=self.textScrollbar.set)
+
+        self.editor.bind('<Any-KeyPress>',self.updateLineNumbers)
+        self.editor.bind('<Control-a>',self.selectAll)
+        self.editor.place(x=50,y=10)
+
+        self.textScrollbar.config(command=self.multipleYView)
+
+        self.code_output = Text(height=10,width=95)
         self.code_output.configure(state="disabled")
-        self.code_output.pack()
+        self.code_output.place(x=10,y=420)
 
     def set_file_path(self, path):
         global file_path
         file_path = path
+
+    def multipleYView(self,*args):
+        self.editor.yview(*args)
+        self.linenumber.yview(*args)
+
+
+    def getLineNumbers(self):
+        self.output = ""
+        self.row, self.col = self.editor.index("end").split(".")
+        for i in range(1,int(self.row)):
+            self.output += str(i) + '\n'
+
+        return self.output
+
+    def updateLineNumbers(self, event=None):
+        self.lineNumber_Bar = self.getLineNumbers()
+        self.linenumber.config(state="normal")
+        self.linenumber.delete(1.0,END)
+        self.linenumber.insert(1.0,self.lineNumber_Bar)
+        self.linenumber.config(state="disabled")
+
+    def selectAll(self, event=None):
+        self.editor.tag_add(SEL,1.0,END)
+        return "break"
 
     def open_file(self):
         path = askopenfilename(filetypes=[('Python Files', '*.py')])
@@ -31,7 +65,9 @@ class GUI:
             code = file.read()
             self.editor.delete('1.0', END)
             self.editor.insert('1.0', code)
+            self.updateLineNumbers()
             self.set_file_path(path)
+
 
     def save_as(self):
         if file_path == '':

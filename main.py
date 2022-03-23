@@ -4,6 +4,7 @@ import subprocess
 import GUI
 
 compiler = Tk()
+compiler.geometry('800x600')
 compiler.title('My Fantastic IDE')
 compiler.resizable(False, False)
 
