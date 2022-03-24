@@ -5,6 +5,9 @@ import re
 from Lexical_analyzer import tokens
 from sys import stdin
 
+global in_global
+in_global = False
+
 precedence = (
     ('right', 'ASSIGN', 'COMPARE'),
     ('left', 'NE'),
@@ -17,13 +20,7 @@ precedence = (
 )
 
 
-# intento de hacer la sintaxis
-
-
-
-
-
-def p_pgrogram(p):
+def p_program(p):
     '''program : block '''
     # p[0] = program(p[1], "program")
     print("program")
