@@ -5,9 +5,6 @@ import re
 from Lexical_analyzer import tokens
 from sys import stdin
 
-global in_global
-in_global = False
-
 precedence = (
     ('right', 'ASSIGN', 'COMPARE'),
     ('left', 'NE'),
@@ -19,146 +16,209 @@ precedence = (
     ('left', 'LPARENT', 'RPARENT'),
 )
 
-
 def p_program(p):
-    '''program : block '''
-    # p[0] = program(p[1], "program")
-    print("program")
-
-def p_block(p):
-	'''block : functionDecl block
+	'''program : functionDecl program
+			 | prinDecl program
 			 | empty'''
+	if p[2] != None:
+		p[0] = [p[1], p[2]]
+	else:
+		p[0] = p[1]
+	#if p[0] != None:
+		#p[0] = simpleListBuilder().createListOfLists(p[0])
+	print("Lista de instrucciones a ejecutar:")
+	print(p[0])
+	#Main(p[0])
 	print("block")
 
+def p_prinDecl(p):
+	'''prinDecl : DEF PRIN LPARENT RPARENT LBRACKET statementList RBRACKET'''
+	p[0] = ["PRINCIPAL", p[6]]
+	print("printdecl")
+
 def p_functionDecl(p):
-	'''functionDecl : DEF PRIN LPARENT RPARENT LBRACKET statementList RBRACKET
-	         | DEF ID LPARENT varList RPARENT LBRACKET statementList RBRACKET'''
+	'''functionDecl : DEF ID LPARENT varList RPARENT LBRACKET statementList RBRACKET'''
+	line = p.lineno(2)
+	#myTable.table[p[2]]["scope"] = 'procedure block'
+	p[0] = ["PROCEDURE", p[2], p[4], p[7], line]
+	print("procedimiento")
+	print("Params detected : ", p[0])
 	print("functionDecl")
 
 def p_statementList1(p):
 	'''statementList : statement '''
+	p[0] = p[1]
+	#if p[0] != None:
+	#	p[0] = simpleListBuilder().createListOfLists(p[0])
 	print("statementList1")
 
 def p_statementList2(p):
 	'''statementList : statementList statement '''
+	p[0] = [p[1], p[2]]
+	#if p[0] != None:
+	#	p[0] = simpleListBuilder().createListOfLists(p[0])
 	print("statementList2")
 
 #SET
 def p_statement1(p):
-    '''statement : SET ID COMMA NUMBER_I SEMICOLOM
-    			| SET ID COMMA NUMBER_F SEMICOLOM
-    			| SET ID COMMA TRUE SEMICOLOM
-    			| SET ID COMMA FALSE SEMICOLOM'''
-    print("statement 1")
+	'''statement : SET ID COMMA TRUE SEMICOLOM
+    			| SET ID COMMA FALSE SEMICOLOM
+    			| SET ID COMMA expression SEMICOLOM'''
+	line = p.lineno(2)
+	p[0] = ["SET", p[2], p[4], line]
+	print("statement 1")
 
 #EXEC
 def p_statement2(p):
-    '''statement : EXEC ID LPARENT varList RPARENT SEMICOLOM'''
-    print("statement 2")
+	'''statement : EXEC ID LPARENT varList RPARENT SEMICOLOM'''
+	line = p.lineno(2)
+	p[0] = ["EXEC", p[2], p[4], line]
+	print("statement 2")
 
 #TYPE
 def p_statement3(p):
-    '''statement : TYPE LPARENT ID RPARENT SEMICOLOM'''
-    print("statement 3")
+	'''statement : TYPE LPARENT ID RPARENT SEMICOLOM'''
+	line = p.lineno(2)
+	p[0] = ["TYPE", p[2], line]
+	print("statement 3")
 
 #IF
 def p_statement4(p):
-    '''statement : IF conditionif LBRACKET statementList RBRACKET
+	'''statement : IF conditionif LBRACKET statementList RBRACKET empty
                  | IF conditionif LBRACKET statementList RBRACKET ELSE LBRACKET statementList RBRACKET '''
-    print("statement 4")
+	line = p.lineno(1)
+	if len(p) == 10:
+		p[0] = ["IF", p[2], line, p[4], p[8]]
+	else:
+		p[0] = ["IF", p[2], line, p[4], p[6]]
+
+	print("statement 4")
 
 #FOR
 def p_statement5(p):
-    '''statement : FOR ID TO var STEP NUMBER_I LBRACKET statementList RBRACKET
-    			| FOR ID TO var STEP LBRACKET statementList RBRACKET'''
-    print("statement 5")
+	'''statement : FOR ID TO expression STEP NUMBER_I LBRACKET statementList RBRACKET
+    			| FOR ID TO expression STEP empty LBRACKET statementList RBRACKET'''
+
+	line = p.lineno(2)
+	p[0] = ["FOR", p[2], p[4], p[6], p[8], line]
+	print("statement 5")
 
 #ENCASO
 def p_statement6(p):
 	'''statement : EC inCaseLista SN LBRACKET statementList RBRACKET FEC SEMICOLOM
 	                 | EC ID inCaseListb SN LBRACKET statementList RBRACKET FEC SEMICOLOM'''
+	line = p.lineno(2)
+	if len(p) == 9:
+		p[0] = ["EC", p[2], p[5], line]
+	else:
+		p[0] = ["EC", p[2], p[3], p[6], line]
 	print("statement 6")
 
 #NE
 def p_statement7(p):
-    '''statement : SET ID DOT NEG SEMICOLOM'''
-    print('statement 7')
+	'''statement : SET ID DOT NEG SEMICOLOM'''
+	line = p.lineno(2)
+	p[0] = ["NE", p[2], line]
+	print('statement 7')
 
 #TRUE - False
 def p_statement8(p):
-    '''statement : SET ID DOT T SEMICOLOM
+	'''statement : SET ID DOT T SEMICOLOM
     			 | SET ID DOT F SEMICOLOM'''
-    print('statement 8')
+	line = p.lineno(2)
+	p[0] = ["BOOL", p[2], p[4], line]
+	print('statement 8')
 
 #abanico
 def p_statement9(p):
-    '''statement : ABANICO LPARENT A RPARENT SEMICOLOM
+	'''statement : ABANICO LPARENT A RPARENT SEMICOLOM
        			| ABANICO LPARENT B RPARENT SEMICOLOM'''
-    print("statement 9")
+	line = p.lineno(2)
+	p[0] = ["ABANICO", p[3], line]
+	print("statement 9")
 
 #vertical
 def p_statement10(p):
-    '''statement : VERTICAL LPARENT D RPARENT SEMICOLOM
+	'''statement : VERTICAL LPARENT D RPARENT SEMICOLOM
        			| VERTICAL LPARENT I RPARENT SEMICOLOM'''
-    print("statement 10")
+	line = p.lineno(2)
+	p[0] = ["VERTICAL", p[3], line]
+	print("statement 10")
 
 
 #percutor
 def p_statement11(p):
-    '''statement : PERCUTOR LPARENT A RPARENT SEMICOLOM
-       			| PERCUTOR LPARENT B RPARENT SEMICOLOM
+	'''statement : PERCUTOR LPARENT A empty RPARENT SEMICOLOM
+       			| PERCUTOR LPARENT B empty RPARENT SEMICOLOM
        			| PERCUTOR LPARENT A B RPARENT SEMICOLOM
-       			| PERCUTOR LPARENT D RPARENT SEMICOLOM
-       			| PERCUTOR LPARENT I RPARENT SEMICOLOM
+       			| PERCUTOR LPARENT D empty RPARENT SEMICOLOM
+       			| PERCUTOR LPARENT I empty RPARENT SEMICOLOM
        			| PERCUTOR LPARENT D I RPARENT SEMICOLOM'''
-
-    print("statement 11")
+	line = p.lineno(2)
+	p[0] = ["PERCUTOR", p[3], p[4], line]
+	print("statement 11")
 
 
 #GOLPE
 def p_statement12(p):
-    '''statement : GOLPE LPARENT RPARENT SEMICOLOM'''
-    print('statement 12')
+	'''statement : GOLPE LPARENT RPARENT SEMICOLOM'''
+	line = p.lineno(2)
+	p[0] = ["GOLPE", line]
+	print('statement 12')
 
 #VIBRATO
 def p_statement13(p):
-    '''statement : VIBRATO LPARENT NUMBER_I RPARENT SEMICOLOM'''
-    print('statement 13')
+	'''statement : VIBRATO LPARENT NUMBER_I RPARENT SEMICOLOM'''
+	line = p.lineno(2)
+	p[0] = ["VIBRATO", p[3], line]
+	print('statement 13')
 
 
 #metronomo
 def p_statement14(p):
-    '''statement : METRONOMO LPARENT A COMMA NUMBER_I RPARENT SEMICOLOM
+	'''statement : METRONOMO LPARENT A COMMA NUMBER_I RPARENT SEMICOLOM
     		      | METRONOMO LPARENT D COMMA NUMBER_I RPARENT SEMICOLOM
     		      | METRONOMO LPARENT A COMMA NUMBER_F RPARENT SEMICOLOM
     		      | METRONOMO LPARENT D COMMA NUMBER_F RPARENT SEMICOLOM'''
-    print('statement 14')
+	line = p.lineno(2)
+	p[0] = ["METRONOMO", p[3], p[5], line]
+	print('statement 14')
 
 #print
 def p_statement15(p):
-    '''statement : PRINT LPARENT printTextList RPARENT SEMICOLOM'''
-    print('statement 15')
+	'''statement : PRINT LPARENT printTextList RPARENT SEMICOLOM'''
+	line = p.lineno(2)
+	if isinstance(p[3], list):
+		p[0] = ["PRINT", p[4], line]
+	else:
+		p[0] = ["PRINT", [p[4]], line]
+	print('statement 15')
 
 def p_printTextList1(p):
 	'''printTextList : printText'''
+	p[0] = p[1]
 	print("printTextList1")
 
 def p_printTextList2(p):
 	'''printTextList : printTextList COMMA printText'''
+	p[0] = [p[1], p[3]]
 	print("printTextList2")
 
 def p_printText(p):
 	'''printText : factor
 					| STRING'''
+	p[0] = p[1]
 	print ('printText')
 
 def p_varList1(p):
 	'''varList : var
 				| empty'''
+	p[0] = p[1]
 	print("varList1")
 
 def p_varList2(p):
 	'''varList : varList COMMA var '''
+	p[0] = [p[1], p[3]]
 	print("varList2")
 
 def p_var (p):
@@ -167,6 +227,7 @@ def p_var (p):
 			| NUMBER_F
 			| TRUE
 			| FALSE'''
+	p[0] = p[1]
 	print("var")
 
 def p_conditionif(p):
@@ -174,103 +235,131 @@ def p_conditionif(p):
 				| TRUE
 				| FALSE
 				| ID'''
+	if len(p) == 4:
+		p[0] = [p[1], p[2], p[3]]
+	else:
+		p[0] = p[1]
 	print("conditionif")
 
 def p_inCaseLista1(p):
 	'''inCaseLista : inCasea '''
+	p[0] = p[1]
 	print("inCaseLista1")
 
 def p_inCaseLista2(p):
 	'''inCaseLista : inCaseLista inCasea'''
+	p[0] = [p[1], p[2]]
 	print("inCaseLista2")
 
 def p_inCasea(p):
 	'''inCasea : ID relation expression'''
+	p[0] = [p[1], p[2], p[3]]
 	print("inCasea")
 
 def p_inCaseListb1(p):
 	'''inCaseListb : inCaseb '''
+	p[0] = p[1]
 	print("inCaseListb1")
 
 def p_inCaseListb2(p):
 	'''inCaseListb : inCaseListb inCaseb'''
+	p[0] = [p[1], p[2]]
 	print("inCaseListb2")
 
-def p_inCaseb (b):
+def p_inCaseb (p):
 	'''inCaseb : relation expression'''
+	p[0] = [p[1], p[2]]
 	print("inCaseb")
 
 def p_relation1(p):
 	'''relation : COMPARE'''
+	p[0] = p[1]
 	print ("relation 1")
 
 def p_relation2(p):
 	'''relation : NE'''
+	p[0] = p[1]
 	print ("relation 2")
 
 def p_relation3(p):
 	'''relation : LT'''
+	p[0] = p[1]
 	print ("relation 3")
 
 def p_relation4(p):
 	'''relation : GT'''
+	p[0] = p[1]
 	print ("relation 4")
 
 def p_relation5(p):
 	'''relation : LTE'''
+	p[0] = p[1]
 	print ("relation 5")
 
 def p_relation6(p):
 	'''relation : GTE'''
+	p[0] = p[1]
 	print ("relation 6")
 
 def p_expression1(p):
 	'''expression : term'''
+	p[0] = p[1]
 	print ("expresion 1")
 
 def p_expression2(p):
 	'''expression : addingOperator term'''
+	p[0] = [p[1], p[2]]
 	print ("expresion 2")
 
 def p_expression3(p):
 	'''expression : expression addingOperator term'''
+	p[0] = [p[1], p[2], p[3]]
 	print ("expresion 3")
 
 def p_addingOperator1(p):
 	'''addingOperator : PLUS'''
+	p[0] = p[1]
 	print ("addingOperator 1")
 
 def p_addingOperator2(p):
 	'''addingOperator : MINUS'''
+	p[0] = p[1]
 	print ("addingOperator 2")
 
 def p_term1(p):
 	'''term : factor'''
+	p[0] = p[1]
 	print ("term 1")
 
 def p_term2(p):
 	'''term : term multiplyingOperator factor'''
+	p[0] = [p[1], p[2], p[3]]
 	print ("term 2")
 
 def p_multiplyingOperator1(p):
 	'''multiplyingOperator : TIMES'''
+	p[0] = p[1]
 	print ("multiplyingOperator 1")
 
 def p_multiplyingOperator2(p):
 	'''multiplyingOperator : DIVIDE'''
+	p[0] = p[1]
 	print ("multiplyingOperator 2")
 
 def p_factor1(p):
 	'''factor : ID'''
+	p[0] = p[1]
 	print ("factor 1")
 
 def p_factor2(p):
 	'''factor : NUMBER_I
 			  | NUMBER_F'''
+	p[0] = p[1]
 	print ("factor 2")
 
 def p_factor3(p):
 	'''factor : LPARENT expression RPARENT'''
+	p[0] = p[2]
 	print ("factor 3")
 
 def p_empty(p):
