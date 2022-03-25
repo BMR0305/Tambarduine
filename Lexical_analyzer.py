@@ -98,41 +98,8 @@ def t_error (t):
     print ("Illegal character '%s'" % t.value[0])
     t.lexer.skip(1)
 
-def search_files(myfile):
-    myfiles = []
-    num_archive = ''
-    answer = False
-    cont = 1
-
-    for base, dirs, files in os.walk(myfile):
-        myfiles.append(files)
-
-    for file in files:
-        print (str(cont)+". "+file)
-        cont = cont+1
-
-    while answer == False:
-        num_archive = input('\nTest number: ')
-        for file in files:
-            if file == files[int(num_archive)-1]:
-                answer = True
-                break
-    print("You choose \"%s\" \n" %files[int(num_archive)-1])
-
-    return files [int(num_archive)-1]
 
 
-directory = '/Users/Lenovo/Documents/GitHub/Tambarduine/Tests/Test_arduino/'
-archive = search_files(directory)
-test = directory+archive
-fp = codecs.open(test, "r", "utf-8")
-chain = fp.read()
-fp.close()
+#analizer = lex.lex()
 
-analizer = lex.lex()
-analizer.input (chain)
-while True:
-    tok = analizer.token()
-    if not tok : break
-    print (tok)
 

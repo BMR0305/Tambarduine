@@ -46,7 +46,7 @@ class SymbolsTable:
                     "scope": None,
                 }
 
-        elif key == "PRINCIPAL":
+        elif key == "PRIN":
             self.prinCounter += 1
             self.mytable[name] = {
                 "cantidad": self.prinCounter,

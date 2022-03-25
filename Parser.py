@@ -2,8 +2,11 @@ import ply.yacc as yacc
 import os
 import codecs
 import re
+
+import Statement_Module
 from Lexical_analyzer import tokens
 from sys import stdin
+from Statement_Module import *
 
 precedence = (
     ('right', 'ASSIGN', 'COMPARE'),
@@ -17,30 +20,30 @@ precedence = (
 )
 
 def p_program(p):
-	'''program : functionDecl program
-			 | prinDecl program
-			 | empty'''
+	'''program : prinDecl program
+			 | functionDecl program
+			 | empty empty'''
 	if p[2] != None:
 		p[0] = [p[1], p[2]]
 	else:
 		p[0] = p[1]
-	#if p[0] != None:
-		#p[0] = simpleListBuilder().createListOfLists(p[0])
+	if p[0] != None:
+		p[0] = simpleListBuilder().createListOfLists(p[0])
 	print("Lista de instrucciones a ejecutar:")
 	print(p[0])
-	#Main(p[0])
-	print("block")
+	Principal(p[0])
 
 def p_prinDecl(p):
 	'''prinDecl : DEF PRIN LPARENT RPARENT LBRACKET statementList RBRACKET'''
 	p[0] = ["PRINCIPAL", p[6]]
-	print("printdecl")
+	print("prindecl")
 
 def p_functionDecl(p):
 	'''functionDecl : DEF ID LPARENT varList RPARENT LBRACKET statementList RBRACKET'''
 	line = p.lineno(2)
-	#myTable.table[p[2]]["scope"] = 'procedure block'
-	p[0] = ["PROCEDURE", p[2], p[4], p[7], line]
+	print (symbolTable.mytable)
+	symbolTable.mytable[p[2]]["scope"] = 'procedure block'
+	p[0] = ["PROCEDURE", p[2], simpleListBuilder().createListOfLists(p[4]), p[7], line]
 	print("procedimiento")
 	print("Params detected : ", p[0])
 	print("functionDecl")
@@ -48,15 +51,15 @@ def p_functionDecl(p):
 def p_statementList1(p):
 	'''statementList : statement '''
 	p[0] = p[1]
-	#if p[0] != None:
-	#	p[0] = simpleListBuilder().createListOfLists(p[0])
+	if p[0] != None:
+		p[0] = simpleListBuilder().createListOfLists(p[0])
 	print("statementList1")
 
 def p_statementList2(p):
 	'''statementList : statementList statement '''
 	p[0] = [p[1], p[2]]
-	#if p[0] != None:
-	#	p[0] = simpleListBuilder().createListOfLists(p[0])
+	if p[0] != None:
+		p[0] = simpleListBuilder().createListOfLists(p[0])
 	print("statementList2")
 
 #SET
@@ -86,7 +89,7 @@ def p_statement3(p):
 def p_statement4(p):
 	'''statement : IF conditionif LBRACKET statementList RBRACKET empty
                  | IF conditionif LBRACKET statementList RBRACKET ELSE LBRACKET statementList RBRACKET '''
-	line = p.lineno(1)
+	line = p.lineno(2)
 	if len(p) == 10:
 		p[0] = ["IF", p[2], line, p[4], p[8]]
 	else:
@@ -133,7 +136,7 @@ def p_statement8(p):
 def p_statement9(p):
 	'''statement : ABANICO LPARENT A RPARENT SEMICOLOM
        			| ABANICO LPARENT B RPARENT SEMICOLOM'''
-	line = p.lineno(2)
+	line = p.lineno(1)
 	p[0] = ["ABANICO", p[3], line]
 	print("statement 9")
 
@@ -141,7 +144,7 @@ def p_statement9(p):
 def p_statement10(p):
 	'''statement : VERTICAL LPARENT D RPARENT SEMICOLOM
        			| VERTICAL LPARENT I RPARENT SEMICOLOM'''
-	line = p.lineno(2)
+	line = p.lineno(1)
 	p[0] = ["VERTICAL", p[3], line]
 	print("statement 10")
 
@@ -154,7 +157,7 @@ def p_statement11(p):
        			| PERCUTOR LPARENT D empty RPARENT SEMICOLOM
        			| PERCUTOR LPARENT I empty RPARENT SEMICOLOM
        			| PERCUTOR LPARENT D I RPARENT SEMICOLOM'''
-	line = p.lineno(2)
+	line = p.lineno(1)
 	p[0] = ["PERCUTOR", p[3], p[4], line]
 	print("statement 11")
 
@@ -162,14 +165,14 @@ def p_statement11(p):
 #GOLPE
 def p_statement12(p):
 	'''statement : GOLPE LPARENT RPARENT SEMICOLOM'''
-	line = p.lineno(2)
+	line = p.lineno(1)
 	p[0] = ["GOLPE", line]
 	print('statement 12')
 
 #VIBRATO
 def p_statement13(p):
 	'''statement : VIBRATO LPARENT NUMBER_I RPARENT SEMICOLOM'''
-	line = p.lineno(2)
+	line = p.lineno(1)
 	p[0] = ["VIBRATO", p[3], line]
 	print('statement 13')
 
@@ -180,16 +183,16 @@ def p_statement14(p):
     		      | METRONOMO LPARENT D COMMA NUMBER_I RPARENT SEMICOLOM
     		      | METRONOMO LPARENT A COMMA NUMBER_F RPARENT SEMICOLOM
     		      | METRONOMO LPARENT D COMMA NUMBER_F RPARENT SEMICOLOM'''
-	line = p.lineno(2)
+	line = p.lineno(1)
 	p[0] = ["METRONOMO", p[3], p[5], line]
 	print('statement 14')
 
 #print
 def p_statement15(p):
 	'''statement : PRINT LPARENT printTextList RPARENT SEMICOLOM'''
-	line = p.lineno(2)
+	line = p.lineno(1)
 	if isinstance(p[3], list):
-		p[0] = ["PRINT", p[4], line]
+		p[0] = ["PRINT", simpleListBuilder().createListOfLists(p[4]), line]
 	else:
 		p[0] = ["PRINT", [p[4]], line]
 	print('statement 15')
@@ -205,7 +208,7 @@ def p_printTextList2(p):
 	print("printTextList2")
 
 def p_printText(p):
-	'''printText : factor
+	'''printText : expression
 					| STRING'''
 	p[0] = p[1]
 	print ('printText')
@@ -213,7 +216,7 @@ def p_printText(p):
 def p_varList1(p):
 	'''varList : var
 				| empty'''
-	p[0] = p[1]
+	p[0] = [p[1]]
 	print("varList1")
 
 def p_varList2(p):
@@ -346,29 +349,50 @@ def p_multiplyingOperator2(p):
 	p[0] = p[1]
 	print ("multiplyingOperator 2")
 
+def p_multiplyingOperator3(p):
+	'''multiplyingOperator : DIVIDE_E'''
+	p[0] = p[1]
+	print ("multiplyingOperator 3")
+
 def p_factor1(p):
-	'''factor : ID'''
+	'''factor : factorM'''
 	p[0] = p[1]
 	print ("factor 1")
 
 def p_factor2(p):
-	'''factor : NUMBER_I
-			  | NUMBER_F'''
-	p[0] = p[1]
+	'''factor : factor MODULE factorM'''
+	p[0] = [p[1], p[2], p[3]]
 	print ("factor 2")
 
-def p_factor3(p):
-	'''factor : LPARENT expression RPARENT'''
+def p_factorM1(p):
+	'''factorM : index'''
+	p[0] = p[1]
+	print("factorM 1")
+
+def p_factorM2(p):
+	'''factorM : factorM EXPONENT index'''
+	p[0] = [p[1], p[2], p[3]]
+	print ("factorM 2")
+
+def p_index1(p):
+	'''index : NUMBER_I
+			  | NUMBER_F
+			  | ID'''
+	p[0] = p[1]
+	print ("index 1")
+
+def p_index2(p):
+	'''index : LPARENT expression RPARENT'''
 	p[0] = p[2]
-	print ("factor 3")
+	print ("index 2")
 
 def p_empty(p):
-	'''empty :'''
+	'''empty : '''
 	pass
 
 def p_error(p):
 	print ("Error de sintaxis ", p)
-	#print "Error en la linea "+str(p.lineno)
+	print ("Error en la linea "+str(p.lineno(1)))
 
 def buscarFicheros(directorio):
     ficheros = []
@@ -396,13 +420,11 @@ def buscarFicheros(directorio):
 
 
 directorio = '/Users/Lenovo/Documents/GitHub/Tambarduine/Tests/Test_arduino/'
-archivo = buscarFicheros(directorio)
-test = directorio + archivo
-fp = codecs.open(test, "r", "utf-8")
-cadena = fp.read()
-fp.close()
+#archivo = buscarFicheros(directorio)
+#test = directorio + archivo
+#fp = codecs.open(test, "r", "utf-8")
+#cadena = fp.read()
+#fp.close()
 
-parser = yacc.yacc()
-result = parser.parse(cadena)
-
-print(result)
+#parser = yacc.yacc()
+#result = parser.parse(cadena)
