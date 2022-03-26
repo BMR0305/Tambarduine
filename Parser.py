@@ -35,7 +35,7 @@ def p_program(p):
 
 def p_prinDecl(p):
 	'''prinDecl : DEF PRIN LPARENT RPARENT LBRACKET statementList RBRACKET'''
-	p[0] = ["PRINCIPAL", p[6]]
+	p[0] = ["PRIN", p[6]]
 	print("prindecl")
 
 def p_functionDecl(p):
@@ -82,7 +82,7 @@ def p_statement2(p):
 def p_statement3(p):
 	'''statement : TYPE LPARENT ID RPARENT SEMICOLOM'''
 	line = p.lineno(2)
-	p[0] = ["TYPE", p[2], line]
+	p[0] = ["TYPE", p[3], line]
 	print("statement 3")
 
 #IF
@@ -112,9 +112,9 @@ def p_statement6(p):
 	                 | EC ID inCaseListb SN LBRACKET statementList RBRACKET FEC SEMICOLOM'''
 	line = p.lineno(2)
 	if len(p) == 9:
-		p[0] = ["EC", p[2], p[5], line]
+		p[0] = ["ECa", p[2], p[5], line]
 	else:
-		p[0] = ["EC", p[2], p[3], p[6], line]
+		p[0] = ["ECb", p[2], p[3], p[6], line]
 	print("statement 6")
 
 #NE
@@ -129,7 +129,7 @@ def p_statement8(p):
 	'''statement : SET ID DOT T SEMICOLOM
     			 | SET ID DOT F SEMICOLOM'''
 	line = p.lineno(2)
-	p[0] = ["BOOL", p[2], p[4], line]
+	p[0] = ["BOOLSET", p[2], p[4], line]
 	print('statement 8')
 
 #abanico
@@ -192,9 +192,9 @@ def p_statement15(p):
 	'''statement : PRINT LPARENT printTextList RPARENT SEMICOLOM'''
 	line = p.lineno(1)
 	if isinstance(p[3], list):
-		p[0] = ["PRINT", simpleListBuilder().createListOfLists(p[4]), line]
+		p[0] = ["PRINT", simpleListBuilder().createListOfLists(p[3]), line]
 	else:
-		p[0] = ["PRINT", [p[4]], line]
+		p[0] = ["PRINT", [p[3]], line]
 	print('statement 15')
 
 def p_printTextList1(p):
@@ -209,7 +209,7 @@ def p_printTextList2(p):
 
 def p_printText(p):
 	'''printText : expression
-					| STRING'''
+				| STRING'''
 	p[0] = p[1]
 	print ('printText')
 
@@ -255,8 +255,9 @@ def p_inCaseLista2(p):
 	print("inCaseLista2")
 
 def p_inCasea(p):
-	'''inCasea : ID relation expression'''
-	p[0] = [p[1], p[2], p[3]]
+	'''inCasea : CUANDO ID relation expression ET LBRACKET statementList RBRACKET'''
+	line = p.lineno(1)
+	p[0] = [p[2], p[3], p[4], p[7], line]
 	print("inCasea")
 
 def p_inCaseListb1(p):
@@ -270,8 +271,9 @@ def p_inCaseListb2(p):
 	print("inCaseListb2")
 
 def p_inCaseb (p):
-	'''inCaseb : relation expression'''
-	p[0] = [p[1], p[2]]
+	'''inCaseb : CUANDO relation expression ET LBRACKET statementList RBRACKET'''
+	line = p.lineno(1)
+	p[0] = [p[2], p[3], p[7], line]
 	print("inCaseb")
 
 def p_relation1(p):
@@ -311,12 +313,12 @@ def p_expression1(p):
 
 def p_expression2(p):
 	'''expression : addingOperator term'''
-	p[0] = [p[1], p[2]]
+	p[0] = p[1] + p[2]
 	print ("expresion 2")
 
 def p_expression3(p):
 	'''expression : expression addingOperator term'''
-	p[0] = [p[1], p[2], p[3]]
+	p[0] = p[1] + p[2] + p[3]
 	print ("expresion 3")
 
 def p_addingOperator1(p):
@@ -336,7 +338,7 @@ def p_term1(p):
 
 def p_term2(p):
 	'''term : term multiplyingOperator factor'''
-	p[0] = [p[1], p[2], p[3]]
+	p[0] = p[1] + p[2] + p[3]
 	print ("term 2")
 
 def p_multiplyingOperator1(p):
@@ -361,7 +363,7 @@ def p_factor1(p):
 
 def p_factor2(p):
 	'''factor : factor MODULE factorM'''
-	p[0] = [p[1], p[2], p[3]]
+	p[0] = p[1] + p[2] + p[3]
 	print ("factor 2")
 
 def p_factorM1(p):
@@ -371,19 +373,25 @@ def p_factorM1(p):
 
 def p_factorM2(p):
 	'''factorM : factorM EXPONENT index'''
-	p[0] = [p[1], p[2], p[3]]
+	p[0] = p[1] + p[2] + p[3]
 	print ("factorM 2")
 
 def p_index1(p):
-	'''index : NUMBER_I
-			  | NUMBER_F
-			  | ID'''
-	p[0] = p[1]
+	'''index : empty NUMBER_I
+			  | empty NUMBER_F
+			  | addingOperator NUMBER_I
+			  | addingOperator NUMBER_F
+			  | addingOperator ID
+			  | empty ID'''
+	if p[1] != None:
+		p[0] = p[1] + p[2]
+	else:
+		p[0] = p[2]
 	print ("index 1")
 
 def p_index2(p):
 	'''index : LPARENT expression RPARENT'''
-	p[0] = p[2]
+	p[0] = "("+ p[2] +")"
 	print ("index 2")
 
 def p_empty(p):
@@ -392,7 +400,7 @@ def p_empty(p):
 
 def p_error(p):
 	print ("Error de sintaxis ", p)
-	print ("Error en la linea "+str(p.lineno(1)))
+	#print ("Error en la linea "+str(p.lineno(1)))
 
 def buscarFicheros(directorio):
     ficheros = []

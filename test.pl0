@@ -1,6 +1,8 @@
-Def Principal (){
-    SET @MFE, 1;
-}
 Def @1112b (){
     SET @ABC, 1;
+}
+Def Principal (){
+    SET @MFE, 1;
+    SET @MFE, 4;
+    println!("Hola Mundo");
 }

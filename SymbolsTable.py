@@ -50,7 +50,7 @@ class SymbolsTable:
             self.prinCounter += 1
             self.mytable[name] = {
                 "cantidad": self.prinCounter,
-                "Scope": "Principal block",
+                "scope": "Principal block",
             }
         elif key == "STRING":
             self.stringList = self.stringList + [name]
@@ -75,20 +75,29 @@ class SymbolsTable:
                 self.mytable[name]["value"] = t_value
                 self.mytable[name]["type"] = int
             elif isinstance(validate_real_bool(value), bool):
-                self.mytable[name]["value"] = validate_bool(t_value)
+                self.mytable[name]["value"] = t_value
                 self.mytable[name]["type"] = bool
+            elif isinstance(value, float):
+                self.mytable[name]["value"] = t_value
+                self.mytable[name]["type"] = float
+
             else:
+                flag = True
                 for var in self.mytable:
                     if var == str(value):
                         new_value = self.mytable[var]["value"]
                         self.mytable[name]["value"] = new_value
                         if isinstance(new_value, int):
                             self.mytable[name]["type"] = int
+                            flag = False
+                        if isinstance(new_value, float):
+                            self.mytable[name]["type"] = float
+                            flag = False
                         elif isinstance(validate_real_bool(new_value), bool):
                             self.mytable[name]["type"] = bool
-                            t_value = new_value
+                            flag = False
 
-                if t_value == value:
+                if flag:
                     #errorHandler = Generate_Error(5, line)
                     #errorHandler.Execute()
                     print("error")

@@ -49,7 +49,7 @@ t_A = r'A'
 t_B = r'B'
 t_D = r'D'
 t_I = r'I'
-t_PRINT = r'println!'
+t_PRINT = r'println\!'
 t_FOR = r'for'
 t_TO = r'to'
 t_STEP = r'Step'
@@ -84,15 +84,18 @@ def t_COMMENT (t):
 
 def t_NUMBER_I (t):
     r'\d+'
-    t.value = int(t.value)
+    t.value = str(t.value)
     return t
 
 def t_NUMBER_F (t):
     r'\d+\.\d+'
-    t.value = float(t.value)
+    t.value = str(t.value)
     return t
 def t_STRING (t):
-    r'".*"'
+    r'\".*?\"'
+    t.value = str(t.value)
+    return t
+
 
 def t_error (t):
     print ("Illegal character '%s'" % t.value[0])

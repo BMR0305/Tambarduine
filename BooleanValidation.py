@@ -1,13 +1,13 @@
 def validate_bool(value):
-    if str(value) == "true":
-        return "true"
+    if str(value) == "True":
+        return "True"
     else:
-        return "false"
+        return "False"
 
 def validate_real_bool(value):
-    if str(value) == "true":
+    if str(value) == "True":
         return True
-    elif str(value) == "false":
+    elif str(value) == "False":
         return False
     else:
         return "ERROR"
