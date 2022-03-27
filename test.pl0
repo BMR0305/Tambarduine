@@ -1,9 +1,13 @@
-Def @1112b (){
+Def @Prueba (){
     SET @ABC, 1;
+    SET @xbc, 3;
+    println!("Entre a Prueba", @ABC, @xbc);
 }
 Def Principal (){
-    SET @MFE, 5;
-    SET @xbc, 2;
+    SET @MFE, 2;
+    SET @xbc, 1;
     SET @xbc, @MFE;
+    Exec @Prueba();
+    SET @xbc, 60;
     println!("Hola Mundo", 1, @xbc);
 }

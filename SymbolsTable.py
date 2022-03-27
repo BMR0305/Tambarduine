@@ -68,9 +68,12 @@ class SymbolsTable:
                     return True
 
         if not exist:
-            if isinstance(value, int) or isinstance(value, bool) or isinstance(value, float):
+            if (isinstance(value, int) or isinstance(value, bool) or isinstance(value, float)):
                 self.mytable[name]["value"] = value
-                self.mytable[name]["type"] = type(value)
+                if self.mytable[name]["type"] == float:
+                    self.mytable[name]["type"] = int
+                else:
+                    self.mytable[name]["type"] = type(value)
                 self.mytable[name]["scope"] = scope
 
             else:
@@ -79,7 +82,10 @@ class SymbolsTable:
                     if var == str(value) and (scope == self.mytable[var]["scope"] or self.mytable[var]["scope"] == "Principal"):
                         new_value = self.mytable[var]["value"]
                         self.mytable[name]["value"] = new_value
-                        self.mytable[name]["type"] = type(new_value)
+                        if self.mytable[name]["type"] == float:
+                            self.mytable[name]["type"] = int
+                        else:
+                            self.mytable[name]["type"] = self.mytable[var]["type"]
                         self.mytable[name]["scope"] = scope
                         flag = False
 

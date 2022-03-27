@@ -41,7 +41,7 @@ def p_functionDecl(p):
 	'''functionDecl : DEF ID LPARENT varList RPARENT LBRACKET statementList RBRACKET'''
 	line = p.lineno(2)
 	symbolTable.mytable[p[2]]["scope"] = 'procedure block'
-	p[0] = ["PROCEDURE", p[2], simpleListBuilder().createListOfLists(p[4]), p[7], line]
+	p[0] = ["PROCEDURE", p[2], p[4], p[7], line]
 
 
 def p_statementList1(p):
@@ -198,7 +198,7 @@ def p_printTextList1(p):
 
 def p_printTextList2(p):
 	'''printTextList : printTextList COMMA printText'''
-	p[0] = p[1] + "$" + p[3]
+	p[0] = p[1] + "|$|" + p[3]
 
 
 def p_printText(p):
@@ -307,12 +307,12 @@ def p_expression1(p):
 
 def p_expression2(p):
 	'''expression : addingOperator term'''
-	p[0] = p[1] + p[2]
+	p[0] = p[1] + "|$|" + p[2]
 
 
 def p_expression3(p):
 	'''expression : expression addingOperator term'''
-	p[0] = p[1] + p[2] + p[3]
+	p[0] = p[1] + "|$|" + p[2] + "|$|" + p[3]
 
 
 def p_addingOperator1(p):
@@ -331,7 +331,7 @@ def p_term1(p):
 
 def p_term2(p):
 	'''term : term multiplyingOperator factor'''
-	p[0] = p[1] + p[2] + p[3]
+	p[0] = p[1] + "|$|" +  p[2] + "|$|" +  p[3]
 
 
 def p_multiplyingOperator1(p):
@@ -356,7 +356,7 @@ def p_factor1(p):
 
 def p_factor2(p):
 	'''factor : factor MODULE factorM'''
-	p[0] = p[1] + p[2] + p[3]
+	p[0] = p[1] + "|$|" +  p[2] + "|$|" +  p[3]
 
 
 def p_factorM1(p):
@@ -366,7 +366,7 @@ def p_factorM1(p):
 
 def p_factorM2(p):
 	'''factorM : factorM EXPONENT index'''
-	p[0] = p[1] + p[2] + p[3]
+	p[0] = p[1] + "|$|" +  p[2] + "|$|" +  p[3]
 
 
 def p_index1(p):
@@ -377,7 +377,7 @@ def p_index1(p):
 			  | addingOperator ID
 			  | empty ID'''
 	if p[1] != None:
-		p[0] = p[1] + p[2]
+		p[0] = p[1] + "|$|" +  p[2]
 	else:
 		p[0] = p[2]
 
