@@ -40,7 +40,6 @@ def lex_test():
             print(" \n ******************* FIN ********************** \n")
 
 def main_checker():
-    print(symbolTable.prinCounter)
     if symbolTable.prinCounter != 1:
         print("Debe haber un solo main")
         return True

@@ -55,52 +55,40 @@ class SymbolsTable:
         elif key == "STRING":
             self.stringList = self.stringList + [name]
             self.mytable["strings"] = self.stringList
-            print("NO BORRAR EL STRING PLS")
         else:
             pass
 
-    def insertValue(self, value, name, line):
+    def insertValue(self, value, name, line, scope):
         exist = False
         for var in self.mytable:
             if var == name:
                 if self.mytable[name]["value"] == None:
                     pass
                 else:
-                    exist = True
                     return True
 
         if not exist:
-            t_value = value
-            if isinstance(value, int):
-                self.mytable[name]["value"] = t_value
-                self.mytable[name]["type"] = int
-            elif isinstance(validate_real_bool(value), bool):
-                self.mytable[name]["value"] = t_value
-                self.mytable[name]["type"] = bool
-            elif isinstance(value, float):
-                self.mytable[name]["value"] = t_value
-                self.mytable[name]["type"] = float
+            if isinstance(value, int) or isinstance(value, bool) or isinstance(value, float):
+                self.mytable[name]["value"] = value
+                self.mytable[name]["type"] = type(value)
+                self.mytable[name]["scope"] = scope
 
             else:
                 flag = True
                 for var in self.mytable:
-                    if var == str(value):
+                    if var == str(value) and (scope == self.mytable[var]["scope"] or self.mytable[var]["scope"] == "Principal"):
                         new_value = self.mytable[var]["value"]
                         self.mytable[name]["value"] = new_value
-                        if isinstance(new_value, int):
-                            self.mytable[name]["type"] = int
-                            flag = False
-                        if isinstance(new_value, float):
-                            self.mytable[name]["type"] = float
-                            flag = False
-                        elif isinstance(validate_real_bool(new_value), bool):
-                            self.mytable[name]["type"] = bool
-                            flag = False
+                        self.mytable[name]["type"] = type(new_value)
+                        self.mytable[name]["scope"] = scope
+                        flag = False
+
+
 
                 if flag:
                     #errorHandler = Generate_Error(5, line)
                     #errorHandler.Execute()
-                    print("error")
+                    print("Error: Variable not found in line", line)
         return False
 
     def printTable(self):

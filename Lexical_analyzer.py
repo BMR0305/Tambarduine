@@ -91,6 +91,7 @@ def t_NUMBER_F (t):
     r'\d+\.\d+'
     t.value = str(t.value)
     return t
+
 def t_STRING (t):
     r'\".*?\"'
     t.value = str(t.value)
