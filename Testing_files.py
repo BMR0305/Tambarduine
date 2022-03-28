@@ -1,7 +1,6 @@
 import ply.lex as lex
 import ply.yacc as yacc
 from Parser import *
-from ErrorChecker import *
 
 def lex_test():
     sourceFile = "test.pl0"
@@ -17,7 +16,7 @@ def lex_test():
             lexer.input(source)
             clone = lexer.clone()
             clone.input(source)
-            error = ErrorChecker()
+            #error = ErrorLog()
 
             for token in clone:
                 symbolTable.insertToken(token.type, token.value)
@@ -30,11 +29,13 @@ def lex_test():
                 parser = yacc.yacc()
                 parser.parse(source)
 
+
+
             symbolTable.printTable()
             print("Saliendo del parser...")
             print("TERMINE DE COMPILAR")
             print(" \n *********** ERRORES DE COMPILACION *********** \n")
-            error.print()
+            #error.print()
 
             print(" \n ******************* FIN ********************** \n")
 
