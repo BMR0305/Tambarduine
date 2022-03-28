@@ -1,5 +1,6 @@
 import ply.lex as lex
 import ply.yacc as yacc
+from ErrorChecker import *
 from Parser import *
 
 def lex_test():
@@ -16,7 +17,7 @@ def lex_test():
             lexer.input(source)
             clone = lexer.clone()
             clone.input(source)
-            #error = ErrorLog()
+            error = ErrorChecker()
 
             for token in clone:
                 symbolTable.insertToken(token.type, token.value)
@@ -35,7 +36,7 @@ def lex_test():
             print("Saliendo del parser...")
             print("TERMINE DE COMPILAR")
             print(" \n *********** ERRORES DE COMPILACION *********** \n")
-            #error.print()
+            error.print()
 
             print(" \n ******************* FIN ********************** \n")
 

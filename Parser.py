@@ -2,11 +2,14 @@ import ply.yacc as yacc
 import os
 import codecs
 import re
+import ErrorChecker
 
 import Statement_Module
 from Lexical_analyzer import tokens
 from sys import stdin
 from Statement_Module import *
+
+
 
 precedence = (
     ('right', 'ASSIGN', 'COMPARE'),
@@ -18,6 +21,10 @@ precedence = (
     ('left', 'EXPONENT'),
     ('left', 'LPARENT', 'RPARENT'),
 )
+
+#Variables for error detection
+syntax_eror = False
+semantic_error = False
 
 def p_program(p):
 	'''program : prinDecl program
@@ -393,6 +400,15 @@ def p_empty(p):
 	pass
 
 def p_error(p):
-	print ("Sintax Error in line", p.lineno)
+	#print ("Sintax Error in line", p.lineno)
+	#print ("Sintax Error in line", p.lineno)
+	if p == None:
+		token = "end of file"
+	else:
+		token = f"{p.type}({p.value}) on line {p.lineno}"
+
+	print(f"Syntax error: Unexpected {token}")
+	error = ErrorChecker()
+	error.log_error(f"Syntax error: Unexpected {token}",2)
 
 
