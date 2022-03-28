@@ -4,7 +4,6 @@ from SymbolsTable import *
 symbolTable = SymbolsTable()
 stop = False
 
-
 class Principal():
     def __init__(self, instructions):
         self.instructions = instructions
@@ -46,41 +45,112 @@ class Principal():
                         #Exec(parametros_exec, parametros_function, instruction, Id  table, line_exec, line_function)
 
             elif i[0] == "TYPE":
-                print("TYPE")
-                #Type(i[1], i[2], symbolTable.mytable)
-                #Type(ID, line, table)
+                # Type(ID, line, table)
+                Type(i[1], i[2], symbolTable.mytable)
 
             elif i[0] == "IF":
-                print("IF")
-                #if If(i[1], symbolTable.mytable, i[2]).Comparison():
-                  #If(conditionif, table, line])
-                #    if i[3] != None: #i[3] = statementList If
-                #        self.runCode(i[3])
-                #elif i[4] != None: #i[4] = statementList Else
-                 #   self.runCode(simpleListBuilder().createListOfLists(i[4]))
+                if i[1] != 'True' and i[1] != 'False' and len(i[1].split('|$|'))>1:
+                    value = self.operation(i[1].split('|$|'), scope)
+
+                elif i[1] == 'True':
+                    value = True
+
+                elif i[1] == 'False':
+                    value = False
+
+                else:
+                    try:
+                        value = int(i[1])
+                    except ValueError:
+                        value = i[1]
+
+                If(value, i[2], i[3], i[4], symbolTable.mytable, scope)
 
             elif i[0] == "FOR":
-                print("FOR")
-                #For(i[1], i[2], i[3], i[4], i[5], symbolTable.mytable)
+                exist = False
+                for var in symbolTable.mytable:
+                    if var == i[1]:
+                        if symbolTable.mytable[i[1]]["value"] == None:
+                            pass
+                        else:
+                            exist = True
+                if not exist:
+                    symbolTable.mytable[i[1]]["value"] = 1
+                    symbolTable.mytable[i[1]]["type"] = int
+                    symbolTable.mytable[i[1]]["scope"] = scope
+
+                For(i[1], i[2], i[3], i[4], i[5], symbolTable.mytable)
                 #For(ID, expression, Number_Id/empty, statementList, line, table)
 
             elif i[0] == "ECa":
-                print("ECa")
-                #ECa(i[1], i[2], symbolTable.mytable, i[3])
-                #ECa(inCaseLista, statementList, table, line)
+                # EC(value, line, statementListEC, statementListSN)
+                flag = False
+                print(i[1])
+                if len(i[1]) == 1:
+                    expression = [i[1][0][0], i[1][0][1], i[1][0][2]]
+                    value = self.operation(expression, scope)
+                    if value == True:
+                        flag = value
+                        self.runCode(i[1][0][3], scope)
+
+                else:
+                    for j in i[1]:
+                        expression=[j[0], j[1], j[2]]
+                        value = self.operation(expression, scope)
+                        if value == True:
+                            flag = value
+                            self.runCode(i[1][0][3], scope)
+                if not flag:
+                    self.runCode(i[2], scope)
+
 
             elif i[0] == "ECb":
-                print("ECb")
-                #ECb(i[1], i[2], i[3], symbolTable.mytable, i[4])
-                #ECb(ID, inCaseListb, statementList, table, line)
+                # EC(value, line, statementListEC, statementListSN)
+                print("ecb")
+                for j in i[2]:
+                    expression = [i[1], j[0], j[1]]
+
+                    value = self.operation(expression, scope)
+                    print(value)
+                    if value:
+                        print("mi",i[2])
+                        self.runCode(j[2], scope)
+                        break
+                if value == False:
+                    self.runCode(i[3], scope)
 
             elif i[0] == "NE":
-                print("NE")
-                #NE(i[1], i[2], symbolTable.mytable)
-                #NE(i[1], i[2], table)
+                exist = False
+                for var in symbolTable.mytable:
+                    if var == i[1]:
+                        if symbolTable.mytable[i[1]]["value"] == None:
+                            pass
+                        else:
+                            exist = True
+                if exist and symbolTable.mytable[i[1]]["type"] == bool:
+                    if symbolTable.mytable[i[1]]["value"] == True:
+                        symbolTable.mytable[i[1]]["value"] = False
+
+                    elif symbolTable.mytable[i[1]]["value"] == False:
+                        symbolTable.mytable[i[1]]["value"] = True
 
             elif i[0] == "BOOLSET":
-                print("BOOLSET")
+                exist = False
+                for var in symbolTable.mytable:
+                    if var == i[1]:
+                        if symbolTable.mytable[i[1]]["value"] == None:
+                            pass
+                        else:
+                            exist = True
+                if exist and symbolTable.mytable[i[1]]["type"] == bool:
+                    if i[2] == 'T':
+                        symbolTable.mytable[i[1]]["value"] = True
+
+                    elif i[2] == 'F':
+                        symbolTable.mytable[i[1]]["value"] = False
+
+
+
                 #BOOLSET(i[1], i[2], i[3], symbolTable.mytable)
                 #BOOLSET(ID, True/False, line, table)
 
@@ -98,7 +168,10 @@ class Principal():
                 if i[0] == '@':
                     for var in symbolTable.mytable:
                         if var == i:
-                            if symbolTable.mytable[var]["value"] != None and (symbolTable.mytable[var]["type"] == int or symbolTable.mytable[var]["type"] == float):
+                            if symbolTable.mytable[var]["value"] != None and \
+                                    (symbolTable.mytable[var]["type"] == int or symbolTable.mytable[var]["type"] == float) and \
+                                    (scope == symbolTable.mytable[var]["scope"] or "Principal" == symbolTable.mytable[var]["scope"]):
+
                                 final_operation = final_operation + str(symbolTable.mytable[var]["value"])
                             else:
                                 print("Error: Variable used in operation isn't valid")
@@ -288,6 +361,77 @@ class Exec:
             return True
         else:
             return False
+
+class Type:
+    def __init__(self, ID, line, table):
+        self.ID = ID
+        self.line = line
+        self.table = table
+
+        flag = False
+        for var in self.table:
+            if var == self.ID:
+                if self.table[ID]["type"] != None:
+                    flag = True
+                    break
+        if flag:
+            print("Variable",self.ID,"is:",(str(self.table[ID]["type"])).replace("<class '", "").replace("'>",""))
+        else:
+            print("Error: Variable not found in line" , self.line)
+
+# (IF, conditionif, line, statementListIf, empty)
+# (IF, conditionif, line, statementListIf, statementListElse)
+class If:
+    def __init__(self, conditionif, line, statementListIf, statementListElse, table, scope):
+        self.conditionif = conditionif
+        self.line = line
+        self.statementListIf = statementListIf
+        self.statementListElse = statementListElse
+        self.table = table
+        self.scope = scope
+
+        if self.conditionif:
+            Principal.runCode(self, self.statementListIf, self.scope)
+
+
+        elif not self.conditionif and self.statementListElse != None:
+            Principal.runCode(self, self.statementListElse, self.scope)
+
+class For:
+    # For(ID, expression, Number_Id/empty, statementList, line, table)
+    # for @var1 to x Step 1
+    def __init__(self, ID, max, step, statementList, line, table):
+        self.ID = ID
+        self.max = int(max)
+        self.statementList = statementList
+        self.line = line
+        self.table = table
+        try:
+            self.step = int(step)
+        except TypeError:
+            self.step = 1
+
+
+        if int(self.table[self.ID]["value"]) <= self.max:
+            self.runFor()
+
+    def runFor(self):
+        i = True
+        while i:
+            Principal(None).runCode( self.statementList, "For")
+            self.table[self.ID]["value"] = int(self.table[self.ID]["value"]) + self.step
+            if self.max < int(self.table[self.ID]["value"]):
+                i = False
+
+        if self.table[self.ID]["scope"] == "For":
+            self.table[self.ID]["value"] = None
+            self.table[self.ID]["type"] = None
+            self.table[self.ID]["scope"] = None
+
+#class EC:
+ #   def __init__(self, conditionEC, line):
+
+
 
 class simpleListBuilder:
 

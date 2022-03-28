@@ -94,7 +94,7 @@ def p_statement4(p):
 #FOR
 def p_statement5(p):
 	'''statement : FOR ID TO expression STEP NUMBER_I LBRACKET statementList RBRACKET
-    			| FOR ID TO expression STEP empty LBRACKET statementList RBRACKET'''
+    			| FOR ID TO expression empty empty LBRACKET statementList RBRACKET'''
 
 	line = p.lineno(2)
 	p[0] = ["FOR", p[2], p[4], p[6], p[8], line]
@@ -231,9 +231,10 @@ def p_conditionif(p):
 	'''conditionif : expression relation expression
 				| TRUE
 				| FALSE
-				| ID'''
+				| ID
+				| ID relation var''' ##
 	if len(p) == 4:
-		p[0] = [p[1], p[2], p[3]]
+		p[0] = p[1] + "|$|" + p[2] + "|$|" + p[3]
 	else:
 		p[0] = p[1]
 
@@ -245,13 +246,13 @@ def p_inCaseLista1(p):
 
 def p_inCaseLista2(p):
 	'''inCaseLista : inCaseLista inCasea'''
-	p[0] = [p[1], p[2]]
+	p[0] = p[1] + p[2]
 
 
 def p_inCasea(p):
 	'''inCasea : CUANDO ID relation expression ET LBRACKET statementList RBRACKET'''
 	line = p.lineno(1)
-	p[0] = [p[2], p[3], p[4], p[7], line]
+	p[0] = [[p[2], p[3], p[4], p[7], line]]
 
 
 def p_inCaseListb1(p):
@@ -261,13 +262,13 @@ def p_inCaseListb1(p):
 
 def p_inCaseListb2(p):
 	'''inCaseListb : inCaseListb inCaseb'''
-	p[0] = [p[1], p[2]]
+	p[0] = p[1] + p[2]
 
 
 def p_inCaseb (p):
 	'''inCaseb : CUANDO relation expression ET LBRACKET statementList RBRACKET'''
 	line = p.lineno(1)
-	p[0] = [p[2], p[3], p[7], line]
+	p[0] = [[p[2], p[3], p[6], line]]
 
 
 def p_relation1(p):
@@ -370,16 +371,16 @@ def p_factorM2(p):
 
 
 def p_index1(p):
-	'''index : empty NUMBER_I
-			  | empty NUMBER_F
+	'''index : NUMBER_I empty
+			  | NUMBER_F empty
 			  | addingOperator NUMBER_I
 			  | addingOperator NUMBER_F
 			  | addingOperator ID
-			  | empty ID'''
-	if p[1] != None:
+			  | ID empty'''
+	if p[2] != None:
 		p[0] = p[1] + "|$|" +  p[2]
 	else:
-		p[0] = p[2]
+		p[0] = p[1]
 
 
 def p_index2(p):
