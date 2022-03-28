@@ -3,6 +3,12 @@
   #  SET @xbc, 3;
    # println!("Entre a Prueba", @ABC, @xbc);
 #}
+
+Def Principal(){
+    SET @varia,60;
+
+}
+
 Def Principal (){
     SET @var, 50;
     EnCaso

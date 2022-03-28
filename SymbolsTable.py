@@ -1,5 +1,6 @@
 from Lexical_analyzer import *
 from BooleanValidation import *
+import ErrorGenerator
 import pprint
 
 #from Software.Semantic.Generate_Error import Generate_Error
@@ -25,8 +26,8 @@ class SymbolsTable:
             else:
                 found = False
         if not found:
-            #errorHandler = Generate_Error(5, line)
-            #errorHandler.Execute()
+            errorHandler = ErrorGenerator(5, line)
+            errorHandler.Execute()
             print("error")
     def getStringList(self):
         return self.stringList
@@ -92,8 +93,8 @@ class SymbolsTable:
 
 
                 if flag:
-                    #errorHandler = Generate_Error(5, line)
-                    #errorHandler.Execute()
+                    errorHandler = ErrorGenerator(5, line)
+                    errorHandler.Execute()
                     print("Error: Variable not found in line", line)
         return False
 
