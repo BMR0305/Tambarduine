@@ -28,11 +28,11 @@ void loop() {
   }**/
   myservo.write(90);
   delay(250);
-  myservo.write(135);
+  myservo.write(115);
   delay(250);
   myservo.write(90);
   delay(250);
-  myservo.write(45);
+  myservo.write(65);
   delay(250);
   myservo.write(90);
   delay(250);
