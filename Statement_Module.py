@@ -18,7 +18,7 @@ class Principal():
         for i in instructions:
             if i[0] == "SET":
                 if i[2] != 'True' and i[2] != 'False' and len(i[2].split('|$|'))>1:
-                    value = self.operation(i[2].split('|$|'), scope)
+                    value = self.operation(i[2].split('|$|'), scope, False)
 
                 elif i[2] == 'True':
                     value = True
@@ -50,7 +50,7 @@ class Principal():
 
             elif i[0] == "IF":
                 if i[1] != 'True' and i[1] != 'False' and len(i[1].split('|$|'))>1:
-                    value = self.operation(i[1].split('|$|'), scope)
+                    value = self.operation(i[1].split('|$|'), scope, True)
 
                 elif i[1] == 'True':
                     value = True
@@ -88,7 +88,7 @@ class Principal():
                 print(i[1])
                 if len(i[1]) == 1:
                     expression = [i[1][0][0], i[1][0][1], i[1][0][2]]
-                    value = self.operation(expression, scope)
+                    value = self.operation(expression, scope, True)
                     if value == True:
                         flag = value
                         self.runCode(i[1][0][3], scope)
@@ -96,10 +96,10 @@ class Principal():
                 else:
                     for j in i[1]:
                         expression=[j[0], j[1], j[2]]
-                        value = self.operation(expression, scope)
+                        value = self.operation(expression, scope, True)
                         if value == True:
                             flag = value
-                            self.runCode(i[1][0][3], scope)
+                            self.runCode(j[3], scope)
                 if not flag:
                     self.runCode(i[2], scope)
 
@@ -110,7 +110,7 @@ class Principal():
                 for j in i[2]:
                     expression = [i[1], j[0], j[1]]
 
-                    value = self.operation(expression, scope)
+                    value = self.operation(expression, scope, True)
                     print(value)
                     if value:
                         print("mi",i[2])
@@ -158,7 +158,7 @@ class Principal():
                 value = i[1].split('|$|')
                 Print_(value, i[2], symbolTable, scope) #Print_(printText/list, line, table, scope)
 
-    def operation(self, operations, scope):
+    def operation(self, operations, scope, comparation):
         final_operation = ""
         for i in operations:
             try:
@@ -169,7 +169,7 @@ class Principal():
                     for var in symbolTable.mytable:
                         if var == i:
                             if symbolTable.mytable[var]["value"] != None and \
-                                    (symbolTable.mytable[var]["type"] == int or symbolTable.mytable[var]["type"] == float) and \
+                                    (symbolTable.mytable[var]["type"] == int or symbolTable.mytable[var]["type"] == float or comparation) and \
                                     (scope == symbolTable.mytable[var]["scope"] or "Principal" == symbolTable.mytable[var]["scope"]):
 
                                 final_operation = final_operation + str(symbolTable.mytable[var]["value"])

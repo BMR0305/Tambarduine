@@ -205,24 +205,31 @@ def p_printTextList1(p):
 
 def p_printTextList2(p):
 	'''printTextList : printTextList COMMA printText'''
+
 	p[0] = p[1] + "|$|" + p[3]
 
 
 def p_printText(p):
-	'''printText : var
+	'''printText : printvar
 				| STRING'''
 	p[0] = p[1]
-
+def p_printvar (p):
+	'''printvar : ID
+			| NUMBER_I
+			| NUMBER_F
+			| TRUE
+			| FALSE'''
+	p[0] = p[1]
 
 def p_varList1(p):
 	'''varList : var
 				| empty'''
-	p[0] = [p[1]]
+	p[0] = p[1]
 
 
 def p_varList2(p):
 	'''varList : varList COMMA var '''
-	p[0] = [p[1], p[3]]
+	p[0] = p[1]+ p[3]
 
 
 def p_var (p):
@@ -231,7 +238,7 @@ def p_var (p):
 			| NUMBER_F
 			| TRUE
 			| FALSE'''
-	p[0] = p[1]
+	p[0] = [p[1]]
 
 
 def p_conditionif(p):
@@ -239,7 +246,7 @@ def p_conditionif(p):
 				| TRUE
 				| FALSE
 				| ID
-				| ID relation var''' ##
+				| ID relation var'''
 	if len(p) == 4:
 		p[0] = p[1] + "|$|" + p[2] + "|$|" + p[3]
 	else:
@@ -257,7 +264,9 @@ def p_inCaseLista2(p):
 
 
 def p_inCasea(p):
-	'''inCasea : CUANDO ID relation expression ET LBRACKET statementList RBRACKET'''
+	'''inCasea : CUANDO ID relation expression ET LBRACKET statementList RBRACKET
+				|  CUANDO ID relation TRUE ET LBRACKET statementList RBRACKET
+				|  CUANDO ID relation FALSE ET LBRACKET statementList RBRACKET'''
 	line = p.lineno(1)
 	p[0] = [[p[2], p[3], p[4], p[7], line]]
 
@@ -273,7 +282,9 @@ def p_inCaseListb2(p):
 
 
 def p_inCaseb (p):
-	'''inCaseb : CUANDO relation expression ET LBRACKET statementList RBRACKET'''
+	'''inCaseb : CUANDO relation expression ET LBRACKET statementList RBRACKET
+				| CUANDO relation TRUE ET LBRACKET statementList RBRACKET
+				| CUANDO relation FALSE ET LBRACKET statementList RBRACKET'''
 	line = p.lineno(1)
 	p[0] = [[p[2], p[3], p[6], line]]
 
@@ -408,7 +419,7 @@ def p_error(p):
 		token = f"{p.type}({p.value}) on line {p.lineno}"
 
 	print(f"Syntax error: Unexpected {token}")
-	error = ErrorChecker()
-	error.log_error(f"Syntax error: Unexpected {token}",2)
+	#error = ErrorChecker()
+	#error.log_error(f"Syntax error: Unexpected {token}",2)
 
 

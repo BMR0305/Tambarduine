@@ -1,16 +1,17 @@
-#Def @Prueba (){
- #   SET @ABC, 1;
-  #  SET @xbc, 3;
-   # println!("Entre a Prueba", @ABC, @xbc);
-#}
+Def @Prueba (@xbc, @ABC){
+    #SET @ABC, 1;
+    #SET @xbc, 3;
+    println!("Entre a Prueba", @ABC, @xbc);
+}
 Def Principal (){
-    SET @var, 50;
+    Exec @Prueba(@CDE, 4);
+    SET @var, True;
     EnCaso
-        Cuando @var <= 1 EnTons
+        Cuando @var == True EnTons
         {
-            println!("Entre a EnCasoA");
+            println!("Entre a EnCasoA 12");
         }
-        Cuando @var <= 1 EnTons
+        Cuando @var >= 3 EnTons
         {
             println!("Entre a EnCasoA");
         }
@@ -29,11 +30,11 @@ Def Principal (){
 
     #EnCaso Sintaxis 2
     EnCaso @var
-        Cuando  <= 10 EnTons
+        Cuando  == False EnTons
         {
             println!("Entre a EnCasoB");
         }
-        Cuando  <= 3 EnTons
+        Cuando  == True EnTons
         {
             println!("Entre a EnCasoB");
         }
