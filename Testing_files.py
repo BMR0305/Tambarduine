@@ -2,6 +2,9 @@ import ply.lex as lex
 import ply.yacc as yacc
 from ErrorChecker import *
 from Parser import *
+from PrintLog import *
+from TambInstructions import *
+import copy
 
 def lex_test():
     sourceFile = "test.pl0"
@@ -17,10 +20,16 @@ def lex_test():
             lexer.input(source)
             clone = lexer.clone()
             clone.input(source)
-#            error = ErrorChecker()
+            #error = ErrorChecker()
+            myprintLog = print_log()
+            myTamb = TambInstructions()
 
             for token in clone:
                 symbolTable.insertToken(token.type, token.value)
+
+            symbolTable.initial_table = copy.deepcopy(symbolTable.mytable)
+            instructions = myTamb.value()
+            print("instructions", myTamb.log)
 
             print("esta es mi tabla")
             symbolTable.printTable()
@@ -30,13 +39,22 @@ def lex_test():
                 parser = yacc.yacc()
                 parser.parse(source)
 
-
-
+            symbolTable.mytable = symbolTable.initial_table
             symbolTable.printTable()
+            myTamb.log = instructions
+
+            print("instructions")
+            instructions = myTamb.value()
+            print(instructions)
+            instructions = myprintLog.value()
+            print(instructions)
+
+
             print("Saliendo del parser...")
             print("TERMINE DE COMPILAR")
+            myprintLog.print()
             print(" \n *********** ERRORES DE COMPILACION *********** \n")
- #           error.print()
+            #error.print()
 
             print(" \n ******************* FIN ********************** \n")
 

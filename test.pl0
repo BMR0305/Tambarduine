@@ -1,57 +1,32 @@
-Def @Prueba (@xbc, @ABC){
-    #SET @ABC, 1;
-    #SET @xbc, 3;
-    println!("Entre a Prueba", @ABC, @xbc);
+Def @ABC(){
+    println!("hola1");
+    Percutor(D);
 }
+
+Def @tgh(){
+    println!("hola2");
+    Percutor(D);
+}
+
 Def Principal (){
-    Exec @Prueba(@CDE, 4);
-    SET @var, True;
-    EnCaso
-        Cuando @var == True EnTons
-        {
-            println!("Entre a EnCasoA 12");
-        }
-        Cuando @var >= 3 EnTons
-        {
-            println!("Entre a EnCasoA");
-        }
-        Cuando @var <= 1 EnTons
-        {
-            println!("Entre a EnCasoA");
-        }
+    SET @var, 50;
+    println!("Entre a Prueba", @var);
+
+    Abanico(A);
+    Abanico(B);
+    Percutor(DI);
 
 
-    SiNo
-    {
-        println!("Entre a SiNoA");
-    }
-    Fin-EnCaso;
+    Exec @ABC();
+    Exec @tgh();
+    println!("Prueba", @var);
+    Exec @poi();
 
+    Golpe();
+    Exec @poi();
+}
 
-    #EnCaso Sintaxis 2
-    EnCaso @var
-        Cuando  == False EnTons
-        {
-            println!("Entre a EnCasoB");
-        }
-        Cuando  == True EnTons
-        {
-            println!("Entre a EnCasoB");
-        }
-        Cuando  <= 0 EnTons
-        {
-            println!("Entre a EnCasoB 70");
-        }
-        Cuando  <= 3 EnTons
-        {
-            println!("Entre a EnCasoB");
-        }
-
-    SiNo
-    {
-        println!("Entre a SiNoB");
-    }
-    Fin-EnCaso;
-
-
+Def @poi(){
+    println!("hola3");
+    Percutor(D);
 }

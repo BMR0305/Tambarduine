@@ -1,8 +1,13 @@
 import SymbolsTable
 #from Arduino_code import *
 from SymbolsTable import *
+from PrintLog import *
+from TambInstructions import *
 symbolTable = SymbolsTable()
-stop = False
+myTamb = TambInstructions()
+myprintLog = print_log()
+stop = True
+str_print = ""
 
 class Principal():
     def __init__(self, instructions):
@@ -10,7 +15,7 @@ class Principal():
         if self.instructions != None:
             for i in self.instructions:
                 if i[0] == "PRIN":
-                    if i[1] != None:
+                    if i[1] != None and stop:
                         self.runCode(i[1], "Principal")
 
     def runCode(self, instructions, scope):
@@ -38,11 +43,14 @@ class Principal():
                     #Set(ID, TRUE/FALSE/expression, line,  table, exist, scope)
 
             elif i[0] == "EXEC":
-                print("EXEC")
+                flag_exec = True
                 for j in self.instructions:
                     if j[1] == i[1]:
+                        flag_exec = False
                         Exec(i[2], j[2], j[3], i[1], symbolTable.mytable, i[3], j[4])
                         #Exec(parametros_exec, parametros_function, instruction, Id  table, line_exec, line_function)
+                if flag_exec:
+                    print("Error: Not found fuction")
 
             elif i[0] == "TYPE":
                 # Type(ID, line, table)
@@ -158,6 +166,33 @@ class Principal():
                 value = i[1].split('|$|')
                 Print_(value, i[2], symbolTable, scope) #Print_(printText/list, line, table, scope)
 
+            elif i[0] == "ABANICO":
+                myTamb.log_tamb(i[1])
+
+            elif i[0] == "VERTICAL":
+                myTamb.log_tamb(i[1])
+
+            elif i[0] == "GOLPE":
+                myTamb.log_tamb("G")
+
+            elif i[0] == "PERCUTOR":
+                if (i[2] == None): str_p = "G" + i[1]
+                else: str_p = "G" + i[1] + str(i[2])
+                myTamb.log_tamb(str_p)
+
+            elif i[0] == "VIBRATO":
+                myTamb.log_tamb('V'+i[1])
+
+            elif i[0] == "Metronomo":
+                myTamb.log_tamb('M'+i[1]+i[2])
+
+        if scope != "Principal":
+            global stop
+            stop = False
+
+
+
+
     def operation(self, operations, scope, comparation):
         final_operation = ""
         for i in operations:
@@ -244,10 +279,14 @@ class Print_:
         self.scope = scope
         #self.logger = PrintLog()
         self.printChecking()
-        #self.logger.log_print.clean()
-        #self.logger.log_print(self.printLogger)
+        #self.logger.clean()
+        #myprintLog.log_print(self.printLogger)
+        #if scope == "Principal":
 
-        print("SE IMPRIMIRA EN LA CONSOLA -->  " + str(self.printLogger) + " DESDE LA LINEA " + str(self.line))
+        myprintLog.log_print(self.printLogger)
+        print("valor",self.printLogger)
+
+        #print("SE IMPRIMIRA EN LA CONSOLA -->  " + str(self.printLogger) + " DESDE LA LINEA " + str(self.line))
 
     def printChecking(self):
         for var in self.value:
@@ -280,8 +319,10 @@ class Exec:
         self.line_exec = line_exec
         self.line_fun = line_fun
 
-        if len(self.param_exec) == len(self.param_fun):
-            if param_exec[0] != None:
+        if self.param_exec != None and self.param_fun != None:
+
+            if len(self.param_exec) == len(self.param_fun):
+            #if param_exec[0] != None:
                 exist = False
                 for i in param_fun:
                     for param in self.table:
@@ -316,16 +357,22 @@ class Exec:
                                 self.table[k]["type"] = None
                                 self.table[k]["scope"] = None
             else:
-                Principal(None).runCode(self.instructions, self.id)
-                for k in self.table:
-                    if k != "strings" and k != "cantidad" and self.table[k]["scope"] != "Principal":
-                        self.table[k]["value"] = None
-                        self.table[k]["type"] = None
-                        self.table[k]["scope"] = None
+                print("Error: Size of params in the declaration doesn't match with function params size")
+                # errorHandler = Generate_Error(20, self.line)
+                # errorHandler.Execute()
+
+        elif self.param_exec == None and self.param_fun == None:
+            Principal(None).runCode(self.instructions, self.id)
+            for k in self.table:
+                if k != "strings" and k != "cantidad" and self.table[k]["scope"] != "Principal":
+                    self.table[k]["value"] = None
+                    self.table[k]["type"] = None
+                    self.table[k]["scope"] = None
+
         else:
             print("Error: Size of params in the declaration doesn't match with function params size")
-            #errorHandler = Generate_Error(20, self.line)
-            #errorHandler.Execute()
+
+
 
     def validateParams(self, params):
         errorFound = False

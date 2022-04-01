@@ -27,13 +27,13 @@ syntax_eror = False
 semantic_error = False
 
 def p_program(p):
-	'''program : prinDecl program
-			 | functionDecl program
+	'''program : program prinDecl
+			 | program functionDecl
 			 | empty empty'''
-	if p[2] != None:
+	if p[1] != None:
 		p[0] = [p[1], p[2]]
 	else:
-		p[0] = p[1]
+		p[0] = p[2]
 	if p[0] != None:
 		p[0] = simpleListBuilder().createListOfLists(p[0])
 	print("Lista de instrucciones a ejecutar:")
@@ -149,7 +149,6 @@ def p_statement10(p):
 	p[0] = ["VERTICAL", p[3], line]
 
 
-
 #percutor
 def p_statement11(p):
 	'''statement : PERCUTOR LPARENT A empty RPARENT SEMICOLOM
@@ -160,7 +159,6 @@ def p_statement11(p):
        			| PERCUTOR LPARENT D I RPARENT SEMICOLOM'''
 	line = p.lineno(1)
 	p[0] = ["PERCUTOR", p[3], p[4], line]
-
 
 
 #GOLPE

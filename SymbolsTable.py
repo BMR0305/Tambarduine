@@ -12,6 +12,7 @@ class SymbolsTable:
         self.prinCounter = 0
         self.ifexist = False
         self.stringList = []
+        self.initial_table = {}
 
     def Clean(self):
         self.mytable = {}
