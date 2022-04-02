@@ -41,11 +41,11 @@ def p_program(p):
 	Principal(p[0])
 
 def p_prinDecl(p):
-	'''prinDecl : DEF PRIN LPARENT RPARENT LBRACKET statementList RBRACKET'''
+	'''prinDecl : DEF PRIN LPARENT RPARENT LBRACKET statementList RBRACKET SEMICOLOM'''
 	p[0] = ["PRIN", p[6]]
 
 def p_functionDecl(p):
-	'''functionDecl : DEF ID LPARENT varList RPARENT LBRACKET statementList RBRACKET'''
+	'''functionDecl : DEF ID LPARENT varList RPARENT LBRACKET statementList RBRACKET SEMICOLOM'''
 	line = p.lineno(2)
 	symbolTable.mytable[p[2]]["scope"] = 'procedure block'
 	p[0] = ["PROCEDURE", p[2], p[4], p[7], line]

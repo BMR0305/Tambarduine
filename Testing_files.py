@@ -6,8 +6,8 @@ from PrintLog import *
 from TambInstructions import *
 import copy
 
-def lex_test():
-    sourceFile = "test.pl0"
+def lex_test(file_path):
+    sourceFile = file_path
     if sourceFile is not None:
         with open(sourceFile, 'r') as file:
             print("Entrando al lexer...")
@@ -27,9 +27,9 @@ def lex_test():
             for token in clone:
                 symbolTable.insertToken(token.type, token.value)
 
-            symbolTable.initial_table = copy.deepcopy(symbolTable.mytable)
-            instructions = myTamb.value()
-            print("instructions", myTamb.log)
+            #symbolTable.initial_table = copy.deepcopy(symbolTable.mytable)
+            #instructions = myTamb.value()
+            #print("instructions", myTamb.log)
 
             print("esta es mi tabla")
             symbolTable.printTable()
@@ -39,15 +39,15 @@ def lex_test():
                 parser = yacc.yacc()
                 parser.parse(source)
 
-            symbolTable.mytable = symbolTable.initial_table
-            symbolTable.printTable()
-            myTamb.log = instructions
+            #symbolTable.mytable = symbolTable.initial_table
+            #symbolTable.printTable()
+            #myTamb.log = instructions
 
-            print("instructions")
-            instructions = myTamb.value()
-            print(instructions)
-            instructions = myprintLog.value()
-            print(instructions)
+            #print("instructions")
+            #instructions = myTamb.value()
+            #print(instructions)
+            #instructions = myprintLog.value()
+            #print(instructions)
 
 
             print("Saliendo del parser...")
@@ -65,4 +65,4 @@ def main_checker():
     else:
         return False
 
-lex_test()
+lex_test("test.pl0")

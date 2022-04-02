@@ -126,24 +126,24 @@ class momvementController:
             self.Movementtime=tempo-0.15
 
 
-movement = momvementController()
+#movement = momvementController()
 
 #vibrato_number = input("input vibrato: ")
 #movement.vibrato(movement.pinB_b1, int(vibrato_number), movement.board_1)
-while(True):
+'''while(True):
     #angle = input("Angle: ")
     #movement.rotateservo(movement.pinD_b2, int(angle), movement.board_2)
-    '''self.pinI_b1 = 9
+    self.pinI_b1 = 9
     self.pinB_b1 = 10
     self.pinC_b1 = 11
     self.pinA_b1 = 12
     self.pinAb_b2 = 9
     self.pinD_b2 = 10
-    self.pinS_b2 = 11'''
+    self.pinS_b2 = 11
     #movement_tempo = input("input tempo: ")
     #movement.calculatetempo(float(movement_tempo))
     movement_letter = input("input movements: ")
-    movement.movement_analisis(movement_letter.split(" "))
+    movement.movement_analisis(movement_letter.split(" "))'''
 #base_angle = input("input Base: ")
 #movement.rotateservo(movement.pinB, base_angle, movement.board_1)
 #side_angle = input("input Side: ")

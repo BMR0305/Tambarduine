@@ -1,6 +1,10 @@
 from tkinter import *
 from tkinter.filedialog import asksaveasfilename, askopenfilename
 import subprocess
+from Testing_files import *
+import Arduino_code
+#tambourine = Arduino_code.momvementController()
+
 file_path = ''
 class GUI:
     def __init__(self, frame):
@@ -86,11 +90,21 @@ class GUI:
             text = Label(save_prompt, text='Please save your code')
             text.pack()
             return
-        command = f'python {file_path}'
+        '''command = f'python {file_path}'
         process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
         output, error = process.communicate()
         self.code_output.insert('1.0', output)
-        self.code_output.insert('1.0', error)
+        self.code_output.insert('1.0', error)'''
+        lex_test(file_path)
+        if True:  #Cambiar por un if que revise si hay errores
+            myprintLog = print_log()
+            self.code_output.insert('1.0', myprintLog.value())
+            #myTamb = TambInstructions()
+            #tambourine.movement_analisis(myTamb.value())
+        else:
+            print("errores")
+            # self.code_output.insert('1.0', ) Pasar los errores
+
         self.code_output.configure(state="disabled")
 
     def set_menu_bar(self):
@@ -104,7 +118,7 @@ class GUI:
     def set_run_bar(self):
         self.run_bar.add_command(label='Run', command=self.run)
         self.run_bar.add_command(label='Compile', command=self.run)
-        self.menu_bar.add_cascade(label='Run', menu=self.run_bar)
+        #self.menu_bar.add_cascade(label='Run', menu=self.run_bar)
 
 
 

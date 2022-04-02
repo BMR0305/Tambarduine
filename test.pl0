@@ -1,13 +1,21 @@
 Def @ABC(){
     println!("hola1");
     Percutor(D);
-}
+};
 
 Def @tgh(){
     println!("hola2");
     Percutor(D);
-}
+};
+Def @poi(){
+    println!("hola3");
+    Percutor(D);
+};
 
+Def @poi(){
+    println!("hola3");
+    Percutor(D);
+};
 Def Principal (){
     SET @var, 50;
     println!("Entre a Prueba", @var);
@@ -24,9 +32,6 @@ Def Principal (){
 
     Golpe();
     Exec @poi();
-}
+};
 
-Def @poi(){
-    println!("hola3");
-    Percutor(D);
-}
+

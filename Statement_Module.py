@@ -43,14 +43,19 @@ class Principal():
                     #Set(ID, TRUE/FALSE/expression, line,  table, exist, scope)
 
             elif i[0] == "EXEC":
-                flag_exec = True
+                count = 0
+                function = []
                 for j in self.instructions:
                     if j[1] == i[1]:
-                        flag_exec = False
-                        Exec(i[2], j[2], j[3], i[1], symbolTable.mytable, i[3], j[4])
+                        function = j
+                        count = count + 1
                         #Exec(parametros_exec, parametros_function, instruction, Id  table, line_exec, line_function)
-                if flag_exec:
+                if count == 0:
                     print("Error: Not found fuction")
+                elif count == 1:
+                    Exec(i[2], function[2], function[3], i[1], symbolTable.mytable, i[3], function[4])
+                else:
+                    print("Error: Found more than one function")
 
             elif i[0] == "TYPE":
                 # Type(ID, line, table)
