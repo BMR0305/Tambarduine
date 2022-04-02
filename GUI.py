@@ -29,12 +29,13 @@ class GUI:
 
         self.editor.bind('<Any-KeyPress>',self.updateLineNumbers)
         self.editor.bind('<Control-a>',self.selectAll)
-        self.code_output.config(font=('Simplified Arabic Fixed', 12), background='#d4be98')
+
         self.editor.place(x=50,y=10)
 
         self.textScrollbar.config(command=self.multipleYView)
 
         self.code_output = Text(height=10,width=95)
+        self.code_output.config(font=('Simplified Arabic Fixed', 12), background='#d4be98')
         self.code_output.configure(state="disabled")
         self.code_output.place(x=10,y=420)
 
@@ -98,17 +99,45 @@ class GUI:
         output, error = process.communicate()
         self.code_output.insert('1.0', output)
         self.code_output.insert('1.0', error)'''
+        error = Error_Checker()
+        myprintLog = print_log()
+        myTamb = TambInstructions()
+        symbolTable.Clean()
+        error.clean()
+        myprintLog.clean()
+        myTamb.clean()
+        self.code_output.delete('1.0', END)
         lex_test(file_path)
-        if True:  #Cambiar por un if que revise si hay errores
-            myprintLog = print_log()
+
+        if error.getErrors() == "":
             self.code_output.insert('1.0', myprintLog.value())
-            #myTamb = TambInstructions()
             #tambourine.movement_analisis(myTamb.value())
+
         else:
-            print("errores")
-            # self.code_output.insert('1.0', ) Pasar los errores
+            self.code_output.insert('1.0', error.getErrors())
 
         self.code_output.configure(state="disabled")
+
+    def compile(self):
+        self.code_output.configure(state="normal")
+        if file_path == '':
+            save_prompt = Toplevel()
+            text = Label(save_prompt, text='Please save your code')
+            text.pack()
+            return
+        error = Error_Checker()
+        myprintLog = print_log()
+        myTamb = TambInstructions()
+        symbolTable.Clean()
+        error.clean()
+        myprintLog.clean()
+        myTamb.clean()
+        self.code_output.delete('1.0', END)
+        lex_test(file_path)
+        if error.getErrors() != "":
+            self.code_output.insert('1.0', error.getErrors())
+        else:
+            self.code_output.insert('1.0', "Compiled succesfully")
 
     def set_menu_bar(self):
         self.file_menu = Menu(self.menu_bar, tearoff=0)
@@ -120,8 +149,8 @@ class GUI:
 
     def set_run_bar(self):
         self.run_bar.add_command(label='Run', command=self.run)
-        self.run_bar.add_command(label='Compile', command=self.run)
-        #self.menu_bar.add_cascade(label='Run', menu=self.run_bar)
+        self.run_bar.add_command(label='Compile', command=self.compile)
+        self.menu_bar.add_cascade(label='Run', menu=self.run_bar)
 
 
 

@@ -39,7 +39,7 @@ class Error_Generator:
             self.error.log_error(msg, 3)
 
         if self.code == 6:
-            msg = "Semantic error found in line " + str(self.line) + "Arithmetic operators cannot be used with boolean data"
+            msg = "Semantic error found in line " + str(self.line) + "Variable used in operation isn't valid"
             Parser.semantic_error = True
             self.error.log_error(msg, 3)
 
@@ -49,7 +49,7 @@ class Error_Generator:
             self.error.log_error(msg, 2)
 
         if self.code == 8:
-            msg = "Semantic error found in line" + str(self.line) + ". Data type assignation has been mismatched "
+            msg = "Semantic error found in line " + str(self.line) + ". Data type assignation has been mismatched "
             Parser.semantic_error = True
             self.error.log_error(msg, 3)
 
@@ -64,10 +64,6 @@ class Error_Generator:
             Parser.syntax_error = True
             self.error.log_error(msg, 3)
 
-        if self.code == 11:
-            msg = "Semantic error found in line " + str(self.line) + ". ---- cambiar error de este if ---- "
-            Parser.syntax_error = True
-            self.error.log_error(msg, 3)
 
         if self.code == 12:
             msg = "Semantic error found in line " + str(self.line) + ". Invalid movement"
@@ -96,8 +92,8 @@ class Error_Generator:
             self.error.log_error(msg, 3)
 
         if self.code == 17:
-            msg = "Semantic error found in line " + str(self.line) + ". -- cambiar error --- MISSING BREAK EXPRESSION"
-            Parser.syntax_error = True
+            msg = "Semantic error found in line " + str(self.line) + ". Variable was assigned with an error value"
+            Parser.semantic_error = True
             self.error.log_error(msg, 3)
 
         if self.code == 18:
@@ -105,22 +101,14 @@ class Error_Generator:
             Parser.syntax_error = True
             self.error.log_error(msg, 3)
 
-        if self.code == 19:
-            e_msg = "Semantic error found in line" + str(self.line) + ". -- cambiar error --- MAXIMUM RECURSION DEPTH EXCEEDED IN COMPARISON"
-            Parser.syntax_error = True
-            self.error.log_error(msg, 3)
 
         if self.code == 20:
-            msg = "Semantic error found in line" + str(self.line) + ". Parameters do not match"
+            msg = "Semantic error found in line " + str(self.line) + ". Parameters do not match"
             Parser.syntax_error = True
             self.error.log_error(msg, 3)
 
         if self.code == 21:
-            msg = "Semantic error found in line" + str(self.line) + ". Variable not found"
+            msg = "Semantic error found in line " + str(self.line) + ". Variable not found"
             Parser.semantic_error = True
             self.error.log_error(msg, 3)
 
-        if self.code == 22:
-            msg = "Semantic error found in line" + str(self.line) + " Variable used in operation isn't valid"
-            Parser.semantic_error = True
-            self.error.log_error(msg, 3)

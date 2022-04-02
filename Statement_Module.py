@@ -25,7 +25,7 @@ class Principal():
         for i in instructions:
             if i[0] == "SET":
                 if i[2] != 'True' and i[2] != 'False' and len(i[2].split('|$|'))>1:
-                    value = self.operation(i[2].split('|$|'), scope, False)
+                    value = self.operation(i[2].split('|$|'), scope, False, i[3])
 
                 elif i[2] == 'True':
                     value = True
@@ -70,7 +70,7 @@ class Principal():
 
             elif i[0] == "IF":
                 if i[1] != 'True' and i[1] != 'False' and len(i[1].split('|$|'))>1:
-                    value = self.operation(i[1].split('|$|'), scope, True)
+                    value = self.operation(i[1].split('|$|'), scope, True, i[2])
 
                 elif i[1] == 'True':
                     value = True
@@ -108,7 +108,7 @@ class Principal():
                 print(i[1])
                 if len(i[1]) == 1:
                     expression = [i[1][0][0], i[1][0][1], i[1][0][2]]
-                    value = self.operation(expression, scope, True)
+                    value = self.operation(expression, scope, True, i[3])
                     if value == True:
                         flag = value
                         self.runCode(i[1][0][3], scope)
@@ -116,7 +116,7 @@ class Principal():
                 else:
                     for j in i[1]:
                         expression=[j[0], j[1], j[2]]
-                        value = self.operation(expression, scope, True)
+                        value = self.operation(expression, scope, True, i[3])
                         if value == True:
                             flag = value
                             self.runCode(j[3], scope)
@@ -130,7 +130,7 @@ class Principal():
                 for j in i[2]:
                     expression = [i[1], j[0], j[1]]
 
-                    value = self.operation(expression, scope, True)
+                    value = self.operation(expression, scope, True, i[4])
                     print(value)
                     if value:
                         print("mi",i[2])
@@ -205,7 +205,7 @@ class Principal():
 
 
 
-    def operation(self, operations, scope, comparation):
+    def operation(self, operations, scope, comparation, line):
         final_operation = ""
         for i in operations:
             try:
@@ -221,11 +221,20 @@ class Principal():
 
                                 final_operation = final_operation + str(symbolTable.mytable[var]["value"])
                             else:
+                                error = Error_Generator(6, self.line)
+                                error.Execute()
                                 print("Error: Variable used in operation isn't valid")
-                                return 0
+                                return "Error"
                 else:
                     final_operation = final_operation + i
-        return eval(final_operation)
+        try:
+            eval(final_operation)
+            return eval(final_operation)
+
+        except ZeroDivisionError:
+            errorHandler = Error_Generator(7, line)
+            errorHandler.Execute()
+            return "Error"
 
 class Set:
                 # Set(ID, TRUE/FALSE/expression, line,  table, exist)
@@ -238,8 +247,11 @@ class Set:
         self.scope = scope
 
         #EXISTANCE ANALYSIS
+        if self.value == "Error":
+            errorHandler = Error_Generator(17, line)
+            errorHandler.Execute()
 
-        if self.exist:
+        elif self.exist:
             if isinstance(self.value, int) or isinstance(self.value, bool) or isinstance(self.value, float):
                 type_ = None
                 if type(self.value) == float:

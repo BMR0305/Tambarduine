@@ -92,7 +92,7 @@ class SymbolsTable:
 
 
 
-                if flag:
+                if flag and value != "Error":
                     errorHandler = Error_Generator(5, line)
                     errorHandler.Execute()
                     print("Error: Variable not found in line", line)

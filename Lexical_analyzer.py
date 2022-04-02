@@ -68,7 +68,7 @@ t_NEG = r'Neg'
 
 
 def t_ID(t):
-    r'[@][a-zA-Z0-9_?][a-zA-Z0-9_?][a-zA-Z0-9_?]*'
+    r'[@][a-zA-Z0-9_?]{2,9}'
     if t.value.upper() in reserved:
         t.value = t.value.upper
         t.type = t.value

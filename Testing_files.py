@@ -67,4 +67,4 @@ def main_checker():
     else:
         return False
 
-lex_test("test.pl0")
+#lex_test("test.pl0")

@@ -40,3 +40,6 @@ class Error_Checker(metaclass=SingletonMeta):
         self.log_lex = ""
         self.log_syn = ""
         self.log_sem = ""
+
+    def getErrors(self):
+        return self.log_lex + self.log_syn + self.log_sem
