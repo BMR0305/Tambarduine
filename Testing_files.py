@@ -20,7 +20,7 @@ def lex_test(file_path):
             lexer.input(source)
             clone = lexer.clone()
             clone.input(source)
-            #error = ErrorChecker()
+            error = Error_Checker()
             myprintLog = print_log()
             myTamb = TambInstructions()
 
@@ -54,13 +54,15 @@ def lex_test(file_path):
             print("TERMINE DE COMPILAR")
             myprintLog.print()
             print(" \n *********** ERRORES DE COMPILACION *********** \n")
-            #error.print()
+            error.print()
 
             print(" \n ******************* FIN ********************** \n")
 
 def main_checker():
     if symbolTable.prinCounter != 1:
         print("Debe haber un solo main")
+        error = Error_Generator(2, 1)
+        error.Execute()
         return True
     else:
         return False

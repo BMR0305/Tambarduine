@@ -3,8 +3,7 @@ from BooleanValidation import *
 import pprint
 import ErrorGenerator
 
-#from Software.Semantic.Generate_Error import Generate_Error
-
+from ErrorGenerator import Error_Generator
 
 class SymbolsTable:
     def __init__(self):
@@ -27,8 +26,8 @@ class SymbolsTable:
             else:
                 found = False
         if not found:
-            errorHandler = ErrorGenerator(5, line)
-            errorHandler.Execute()
+            error = Error_Generator(5, line)
+            error.Execute()
             print("error")
     def getStringList(self):
         return self.stringList
@@ -94,7 +93,7 @@ class SymbolsTable:
 
 
                 if flag:
-                    errorHandler = ErrorGenerator(5, line)
+                    errorHandler = Error_Generator(5, line)
                     errorHandler.Execute()
                     print("Error: Variable not found in line", line)
         return False

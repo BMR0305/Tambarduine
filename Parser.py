@@ -2,7 +2,7 @@ import ply.yacc as yacc
 import os
 import codecs
 import re
-import ErrorChecker
+from ErrorChecker import  *
 
 import Statement_Module
 from Lexical_analyzer import tokens
@@ -417,7 +417,7 @@ def p_error(p):
 		token = f"{p.type}({p.value}) on line {p.lineno}"
 
 	print(f"Syntax error: Unexpected {token}")
-	#error = ErrorChecker()
-	#error.log_error(f"Syntax error: Unexpected {token}",2)
+	error = Error_Checker()
+	error.log_error(f"Syntax error: Unexpected {token}",2)
 
 

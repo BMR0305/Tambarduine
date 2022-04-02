@@ -7,7 +7,7 @@ class SingletonMeta(type):
             cls._instances[cls] = instance
         return cls._instances[cls]
 
-class ErrorChecker(metaclass=SingletonMeta):
+class Error_Checker(metaclass=SingletonMeta):
     def __init__(self):
         self.log_lex = ""
         self.log_syn = ""

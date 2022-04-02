@@ -1,11 +1,11 @@
-import ErrorChecker
+from ErrorChecker import Error_Checker
 import Parser
 
-class ErrorGenerator:
+class Error_Generator:
     def __init__(self, code, line=0):
         self.code = code
         self.line = line
-        self.error = ErrorChecker()
+        self.error = Error_Checker()
 
     def Execute(self):
         if self.code == 0:
@@ -14,12 +14,12 @@ class ErrorGenerator:
             self.error.log_error(msg,2)
 
         if self.code == 1:
-            msg = "No PRINCIPAL method was found"
+            msg = "No EXEC method was found"
             Parser.semantic_error = True
             self.error.log_error(msg,3)
 
         if self.code == 2:
-            msg = "Only one PRINCIPAL method is allowed"
+            msg = "Only one EXEC method is allowed"
             Parser.semantic_error = True
             self.error.log_error(msg, 3)
 
@@ -85,7 +85,8 @@ class ErrorGenerator:
             self.error.log_error(msg, 3)
 
         if self.code == 15:
-            msg = "Semantic error found in line " + str(self.line) + ". Declared variable was called"
+            msg = "Semantic error found in line " + str(
+                self.line) + ". Declared variable can't be changed into another type of variable"
             Parser.syntax_error = True
             self.error.log_error(msg, 3)
 
@@ -112,4 +113,14 @@ class ErrorGenerator:
         if self.code == 20:
             msg = "Semantic error found in line" + str(self.line) + ". Parameters do not match"
             Parser.syntax_error = True
+            self.error.log_error(msg, 3)
+
+        if self.code == 21:
+            msg = "Semantic error found in line" + str(self.line) + ". Variable not found"
+            Parser.semantic_error = True
+            self.error.log_error(msg, 3)
+
+        if self.code == 22:
+            msg = "Semantic error found in line" + str(self.line) + " Variable used in operation isn't valid"
+            Parser.semantic_error = True
             self.error.log_error(msg, 3)

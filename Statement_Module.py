@@ -3,6 +3,8 @@ import SymbolsTable
 from SymbolsTable import *
 from PrintLog import *
 from TambInstructions import *
+from ErrorChecker import *
+from ErrorGenerator import *
 symbolTable = SymbolsTable()
 myTamb = TambInstructions()
 myprintLog = print_log()
@@ -51,14 +53,19 @@ class Principal():
                         count = count + 1
                         #Exec(parametros_exec, parametros_function, instruction, Id  table, line_exec, line_function)
                 if count == 0:
+                    error = Error_Generator(1,i[3])
+                    error.Execute()
                     print("Error: Not found fuction")
+
                 elif count == 1:
                     Exec(i[2], function[2], function[3], i[1], symbolTable.mytable, i[3], function[4])
                 else:
+                    error = Error_Generator(2, i[3])
+                    error.Execute()
                     print("Error: Found more than one function")
 
             elif i[0] == "TYPE":
-                # Type(ID, line, table)
+                #Type(ID, line, table)
                 Type(i[1], i[2], symbolTable.mytable)
 
             elif i[0] == "IF":
@@ -247,17 +254,17 @@ class Set:
                         self.value) + " EN LA LINEA " + str(self.line))
 
                 else:
-                    #errorHandler=Generate_Error(15, self.line)
-                    #errorHandler.Execute()
-                    print("Error: Can't change initial type in line" , line)
+                    errorHandler = Error_Generator(15, self.line)
+                    errorHandler.Execute()
+                    print("Error: Can't change initial type in line", line)
 
             else:
                 flag = True
                 for var in self.table:
                     if var == str(value) and (self.scope == self.table[var]["scope"] or self.table[var]["scope"] == "Principal"):
                         if (self.table[self.value]["type"]) != (self.table[self.id]["type"]):
-                            #errorHandler = Generate_Error(4, self.line)
-                            #errorHandler.Execute()
+                            error = Error_Generator(4, self.line)
+                            error.Execute()
                             print("Error: Variable type unmatch in line", line)
                             flag = False
                             break
@@ -270,8 +277,8 @@ class Set:
                             break
 
                 if flag:
-                    #errorHandler = Generate_Error(5, self.line)
-                    #errorHandler.Execute()
+                    error = Error_Generator(5, self.line)
+                    error.Execute()
                     print("Error: Variable not found in line" , line)
 
 class Print_:
@@ -311,7 +318,8 @@ class Print_:
                     if exist:
                         self.printLogger = self.printLogger + str(self.table[i]["value"]) + " "
                     else:
-                        print ("error")
+                        error = Error_Generator(5, self.line)
+                        error.Execute()
 
 class Exec:
     ##Exec(parametros_exec, parametros_function, instruction, Id  table, line_exec, line_function)
@@ -333,8 +341,8 @@ class Exec:
                     for param in self.table:
                         if (param == i):
                             if self.table[param]["value"] != None:
-                                #errorHandler = Generate_Error(15, self.lineP)
-                                #errorHandler.Execute()
+                                error = Error_Generator(15, self.line_exec)
+                                error.Execute()
                                 print("Error: Variable already declared")
                                 exist = True
                                 break
@@ -363,8 +371,8 @@ class Exec:
                                 self.table[k]["scope"] = None
             else:
                 print("Error: Size of params in the declaration doesn't match with function params size")
-                # errorHandler = Generate_Error(20, self.line)
-                # errorHandler.Execute()
+                error = Error_Generator(20, self.line)
+                error.Execute()
 
         elif self.param_exec == None and self.param_fun == None:
             Principal(None).runCode(self.instructions, self.id)
@@ -376,6 +384,8 @@ class Exec:
 
         else:
             print("Error: Size of params in the declaration doesn't match with function params size")
+            error = Error_Generator(20, self.line_exec)
+            error.Execute()
 
 
 
@@ -404,9 +414,9 @@ class Exec:
                     else:
                         print("Error:The value of a param doesnt match any type")
             if not exist:
-                #errorFound = True
-                #errorHandler = Generate_Error(5, self.line)
-                #errorHandler.Execute()
+                errorFound = True
+                error = Error_Generator(5, self.line_exec)
+                error.Execute()
                 print ("Error: Variable not found")
             param += 1
         if errorFound == False:
@@ -429,7 +439,10 @@ class Type:
         if flag:
             print("Variable",self.ID,"is:",(str(self.table[ID]["type"])).replace("<class '", "").replace("'>",""))
         else:
-            print("Error: Variable not found in line" , self.line)
+            error = Error_Generator(21, self.line)
+            error.Execute()
+            print("Error: Variable not found in line ", self.line)
+
 
 # (IF, conditionif, line, statementListIf, empty)
 # (IF, conditionif, line, statementListIf, statementListElse)
@@ -466,6 +479,9 @@ class For:
 
         if int(self.table[self.ID]["value"]) <= self.max:
             self.runFor()
+        else:
+            error = Error_Generator(16, self.line)
+            error.Execute()
 
     def runFor(self):
         i = True
