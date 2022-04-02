@@ -51,9 +51,9 @@ class momvementController:
             elif letter=="G":
                 self.rotateservo(self.pinC_b1, 60, self.board_1)
             elif letter=="GA":
-                self.rotateservo(self.pinA_b1, 70, self.board_1)
+                self.rotateservo(self.pinA_b1, 60, self.board_1)
             elif letter=="GB":
-                self.rotateservo(self.pinAb_b2, 70, self.board_2)
+                self.rotateservo(self.pinAb_b2, 120, self.board_2)
             elif letter=="GD":
                 self.rotateservo(self.pinD_b2, 70, self.board_2)
             elif letter=="GI":
@@ -61,7 +61,13 @@ class momvementController:
             elif letter=="GDI":
                 self.rotate_multipleservos(self.pinI_b1, self.pinD_b2, 110, 70, self.board_1, self.board_2)
             elif letter=="GAB":
-                self.rotate_multipleservos(self.pinA_b1, self.pinAb_b2, 70, 70, self.board_1, self.board_2)
+                self.rotate_multipleservos(self.pinA_b1, self.pinAb_b2, 60, 120, self.board_1, self.board_2)
+            elif letter[0] == "V":
+                self.vibrato(movement.pinB_b1, int(letter[1:]), movement.board_1)
+            elif letter[0] == "M":
+                self.ActivateMetronome(letter[1])
+                self.calculatetempo(float(letter[2:]))
+
 
     def rotate_multipleservos (self, pin1, pin2, angle1, angle2, board1, board2):
         self.makesound()
