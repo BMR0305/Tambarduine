@@ -1,4 +1,4 @@
-from pyfirmata import Arduino, SERVO, util, PWM
+from pyfirmata import *
 from time import sleep
 
 class momvementController:
