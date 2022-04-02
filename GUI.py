@@ -21,12 +21,15 @@ class GUI:
         self.textScrollbar = Scrollbar(self.myFrame)
         self.textScrollbar.pack(side=RIGHT,fill=Y)
 
-        self.linenumber = Text(frame,height=25,width=4,padx=0,state="disabled",takefocus=0, background="grey", wrap="none", yscrollcommand=self.textScrollbar.set)
+        self.linenumber = Text(frame, height=25, width=4, padx=0, state="disabled", takefocus=0, background="#d4be98",
+                               wrap="none", yscrollcommand=self.textScrollbar.set)
         self.linenumber.place(x=10,y=10)
         self.editor = Text(frame,wrap="word", undo=True,height=25,width=90,yscrollcommand=self.textScrollbar.set)
+        self.editor.config(font=('Simplified Arabic Fixed', 10, "bold"), background="#eddec2")
 
         self.editor.bind('<Any-KeyPress>',self.updateLineNumbers)
         self.editor.bind('<Control-a>',self.selectAll)
+        self.code_output.config(font=('Simplified Arabic Fixed', 12), background='#d4be98')
         self.editor.place(x=50,y=10)
 
         self.textScrollbar.config(command=self.multipleYView)

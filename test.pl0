@@ -18,20 +18,36 @@ Def @poi(){
 };
 Def Principal (){
     SET @var, 50;
-    println!("Entre a Prueba", @var);
-
-    Abanico(A);
-    Abanico(B);
-    Percutor(DI);
+    SET @var, True;
+    type(@err);
 
 
-    Exec @ABC();
-    Exec @tgh();
-    println!("Prueba", @var);
-    Exec @poi();
 
-    Golpe();
-    Exec @poi();
+    SET @variable, 10;
+    SET @num1, 10;
+    SET @result, @num1/2;
+    println!(@result);
+
+    println!(@printVar);
+
+    For @variable to 4 Step 1{
+        println!("Hola mundo");
+    }
+
+    #println!("Entre a Prueba", @var);
+
+    #Abanico(A);
+    #Abanico(B);
+    #Percutor(DI);
+
+
+    #Exec @ABC();
+    #Exec @tgh();
+    #println!("Prueba", @var);
+    #Exec @poi();
+
+    #Golpe();
+    #Exec @poi();
 };
 
 
