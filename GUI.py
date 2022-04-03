@@ -3,7 +3,7 @@ from tkinter.filedialog import asksaveasfilename, askopenfilename
 import subprocess
 from Testing_files import *
 import Arduino_code
-#tambourine = Arduino_code.momvementController()
+tambourine = Arduino_code.momvementController()
 
 file_path = ''
 class GUI:
@@ -111,7 +111,7 @@ class GUI:
 
         if error.getErrors() == "":
             self.code_output.insert('1.0', myprintLog.value())
-            #tambourine.movement_analisis(myTamb.value())
+            tambourine.movement_analisis(myTamb.value())
 
         else:
             self.code_output.insert('1.0', error.getErrors())

@@ -195,7 +195,7 @@ class Principal():
             elif i[0] == "VIBRATO":
                 myTamb.log_tamb('V'+i[1])
 
-            elif i[0] == "Metronomo":
+            elif i[0] == "METRONOMO":
                 myTamb.log_tamb('M'+i[1]+i[2])
 
         if scope != "Principal":

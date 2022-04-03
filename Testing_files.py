@@ -53,6 +53,7 @@ def lex_test(file_path):
             print("Saliendo del parser...")
             print("TERMINE DE COMPILAR")
             myprintLog.print()
+            myTamb.print()
             print(" \n *********** ERRORES DE COMPILACION *********** \n")
             error.print()
 
