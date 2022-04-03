@@ -3,7 +3,7 @@ from tkinter.filedialog import asksaveasfilename, askopenfilename
 import subprocess
 from Testing_files import *
 import Arduino_code
-tambourine = Arduino_code.momvementController()
+#tambourine = Arduino_code.momvementController()
 
 file_path = ''
 class GUI:
@@ -94,11 +94,6 @@ class GUI:
             text = Label(save_prompt, text='Please save your code')
             text.pack()
             return
-        '''command = f'python {file_path}'
-        process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-        output, error = process.communicate()
-        self.code_output.insert('1.0', output)
-        self.code_output.insert('1.0', error)'''
         error = Error_Checker()
         myprintLog = print_log()
         myTamb = TambInstructions()
@@ -111,7 +106,7 @@ class GUI:
 
         if error.getErrors() == "":
             self.code_output.insert('1.0', myprintLog.value())
-            tambourine.movement_analisis(myTamb.value())
+            #tambourine.movement_analisis(myTamb.value())
 
         else:
             self.code_output.insert('1.0', error.getErrors())
@@ -138,6 +133,8 @@ class GUI:
             self.code_output.insert('1.0', error.getErrors())
         else:
             self.code_output.insert('1.0', "Compiled succesfully")
+
+        self.code_output.configure(state="disabled")
 
     def set_menu_bar(self):
         self.file_menu = Menu(self.menu_bar, tearoff=0)

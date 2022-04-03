@@ -198,7 +198,7 @@ class Principal():
             elif i[0] == "METRONOMO":
                 myTamb.log_tamb('M'+i[1]+i[2])
 
-        if scope != "Principal":
+        if scope == "Principal":
             global stop
             stop = False
 

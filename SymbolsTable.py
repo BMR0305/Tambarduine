@@ -16,6 +16,7 @@ class SymbolsTable:
     def Clean(self):
         self.mytable = {}
         self.prinCounter = 0
+        self.stringList = []
 
     def getValue(self, name, line):
         found = False

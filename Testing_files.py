@@ -54,6 +54,7 @@ def lex_test(file_path):
             print("TERMINE DE COMPILAR")
             myprintLog.print()
             myTamb.print()
+            Statement_Module.stop = True
             print(" \n *********** ERRORES DE COMPILACION *********** \n")
             error.print()
 
